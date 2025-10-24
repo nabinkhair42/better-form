@@ -156,14 +156,14 @@
   }
 }
 
-
-/* Shiki dual theme support for code blocks */
-.shiki {
-  font-size: 0.95em;
-  line-height: 1.6;
-  padding: 4px 0 0px 4px;
-  border-radius: var(--radius-md);
-  overflow-x: auto;
+/* Shiki code block styling with dual theme support */
+html:not(.dark) .shiki,
+html:not(.dark) .shiki span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+  font-style: var(--shiki-light-font-style) !important;
+  font-weight: var(--shiki-light-font-weight) !important;
+  text-decoration: var(--shiki-light-text-decoration) !important;
 }
 
 html.dark .shiki,
@@ -175,11 +175,49 @@ html.dark .shiki span {
   text-decoration: var(--shiki-dark-text-decoration) !important;
 }
 
-html:not(.dark) .shiki,
-html:not(.dark) .shiki span {
-  color: var(--shiki-light) !important;
-  background-color: var(--shiki-light-bg) !important;
-  font-style: var(--shiki-light-font-style) !important;
-  font-weight: var(--shiki-light-font-weight) !important;
-  text-decoration: var(--shiki-light-text-decoration) !important;
+.shiki {
+  padding: 1rem;
+  margin: 0;
+  font-family: var(--font-mono), "Courier New", monospace;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  overflow-x: auto;
+}
+
+.shiki code {
+  font-family: inherit;
+  counter-reset: line;
+  display: block;
+}
+
+.shiki .line {
+  display: inline-block;
+  width: 100%;
+}
+
+/* Custom scrollbar for code blocks */
+.shiki::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.shiki::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.shiki::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.dark .shiki::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.shiki::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.dark .shiki::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }

@@ -4,11 +4,6 @@ import { CopyButton } from "@/components/ui/extended/copy-button";
 import { useEffect, useState } from "react";
 import { type BundledLanguage, codeToHtml } from "shiki";
 
-const THEMES = {
-  light: "github-light-default",
-  dark: "github-dark-default",
-} as const;
-
 type HighlightLanguage = BundledLanguage | "text";
 
 const LANGUAGE_ALIASES: Record<string, HighlightLanguage> = {
@@ -93,7 +88,10 @@ export function CodeBlockClient({
     async function highlight() {
       const highlightedHtml = await codeToHtml(normalizedCode, {
         lang: lang as unknown as BundledLanguage,
-        themes: THEMES,
+        themes: {
+          light: "github-light",
+          dark: "github-dark",
+        },
         defaultColor: false,
       });
       setHtml(highlightedHtml);
@@ -110,10 +108,9 @@ export function CodeBlockClient({
         <span className="truncate">{displayLabel}</span>
         <CopyButton value={normalizedCode} />
       </figcaption>
-      <div
-        className="shiki-container overflow-x-auto max-h-[calc(100vh-280px)]"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-280px)] bg-[#ffffff] dark:bg-[#0d1117]">
+        <div dangerouslySetInnerHTML={{ __html: html }} />
+      </div>
     </figure>
   );
 }

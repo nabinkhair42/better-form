@@ -14,7 +14,7 @@ export function CodeContent() {
             Copy the generated code to use in your project
           </p>
         </div>
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto max-w-5xl">
           <CodeExport />
         </div>
       </div>
