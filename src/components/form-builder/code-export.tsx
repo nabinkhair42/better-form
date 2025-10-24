@@ -1,16 +1,19 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useFormStore } from '@/store/form-store';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Copy, Check } from 'lucide-react';
-import { generateZodSchema, generateReactComponent } from '@/lib/code-generator';
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  generateReactComponent,
+  generateZodSchema,
+} from "@/lib/code-generator";
+import { useFormStore } from "@/store/form-store";
+import { Check, Copy } from "lucide-react";
+import { useState } from "react";
 
 export function CodeExport() {
   const { formConfig } = useFormStore();
   const [copiedTab, setCopiedTab] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"schema" | "component">("schema");
 
   const zodSchema = generateZodSchema(formConfig);
   const reactComponent = generateReactComponent(formConfig);
@@ -21,7 +24,7 @@ export function CodeExport() {
       setCopiedTab(tab);
       setTimeout(() => setCopiedTab(null), 2000);
     } catch (err) {
-      console.error('Failed to copy text: ', err);
+      console.error("Failed to copy text: ", err);
     }
   };
 
@@ -34,31 +37,45 @@ export function CodeExport() {
   }
 
   return (
-    <div className="border rounded-lg p-6 bg-card shadow-sm">
-      <Tabs defaultValue="schema" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-6">
-          <TabsTrigger value="schema">Zod Schema</TabsTrigger>
-          <TabsTrigger value="component">React Component</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="schema" className="space-y-4">
+    <div className="p-4">
+      <div className="flex items-center gap-1 bg-muted p-1 rounded-lg mb-6 max-w-fit">
+        <Button
+          variant={activeTab === "schema" ? "default" : "ghost"}
+          size="sm"
+          onClick={() => setActiveTab("schema")}
+          className="h-8"
+        >
+          Zod Schema
+        </Button>
+        <Button
+          variant={activeTab === "component" ? "default" : "ghost"}
+          size="sm"
+          onClick={() => setActiveTab("component")}
+          className="h-8"
+        >
+          React Component
+        </Button>
+      </div>
+
+      {activeTab === "schema" && (
+        <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-muted-foreground">schema.ts</p>
+            <p className="text-sm font-medium text-muted-foreground">
+              schema.ts
+            </p>
             <Button
               variant="outline"
-              size="sm"
-              onClick={() => copyToClipboard(zodSchema, 'schema')}
-              className="h-8 gap-2"
+              size="icon"
+              onClick={() => copyToClipboard(zodSchema, "schema")}
+              className="h-7 gap-2"
             >
-              {copiedTab === 'schema' ? (
+              {copiedTab === "schema" ? (
                 <>
                   <Check className="h-4 w-4" />
-                  <span>Copied</span>
                 </>
               ) : (
                 <>
                   <Copy className="h-4 w-4" />
-                  <span>Copy</span>
                 </>
               )}
             </Button>
@@ -68,18 +85,22 @@ export function CodeExport() {
             readOnly
             className="font-mono text-xs min-h-[500px] resize-none"
           />
-        </TabsContent>
-        
-        <TabsContent value="component" className="space-y-4">
+        </div>
+      )}
+
+      {activeTab === "component" && (
+        <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-muted-foreground">form-component.tsx</p>
+            <p className="text-sm font-medium text-muted-foreground">
+              form-component.tsx
+            </p>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => copyToClipboard(reactComponent, 'component')}
+              onClick={() => copyToClipboard(reactComponent, "component")}
               className="h-8 gap-2"
             >
-              {copiedTab === 'component' ? (
+              {copiedTab === "component" ? (
                 <>
                   <Check className="h-4 w-4" />
                   <span>Copied</span>
@@ -97,8 +118,8 @@ export function CodeExport() {
             readOnly
             className="font-mono text-xs min-h-[500px] resize-none"
           />
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
     </div>
   );
 }

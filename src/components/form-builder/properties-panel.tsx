@@ -1,23 +1,31 @@
-'use client';
+"use client";
 
-import { useFormStore } from '@/store/form-store';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Trash2 } from 'lucide-react';
-import { InputType } from '@/types/form';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { useFormStore } from "@/store/form-store";
+import { InputType } from "@/types/form";
+import { Plus, Trash2 } from "lucide-react";
 
 export function PropertiesPanel() {
   const { formConfig, selectedFieldId, updateField } = useFormStore();
-  
-  const selectedField = formConfig.fields.find(field => field.id === selectedFieldId);
+
+  const selectedField = formConfig.fields.find(
+    (field) => field.id === selectedFieldId,
+  );
 
   if (!selectedField) {
     return (
-      <div className="w-80 lg:w-96 border-l border-border bg-card p-4 h-full overflow-y-auto">
+      <div className="w-64 lg:w-72 border-l border-border bg-card p-4 h-full overflow-y-auto">
         <div className="text-center text-muted-foreground mt-8">
           <p className="text-sm">Select a field to edit its properties</p>
         </div>
@@ -25,13 +33,16 @@ export function PropertiesPanel() {
     );
   }
 
-  const handleFieldUpdate = (updates: any) => {
+  const handleFieldUpdate = (updates: Partial<typeof selectedField>) => {
     updateField(selectedField.id, updates);
   };
 
   const addOption = () => {
     const currentOptions = selectedField.options || [];
-    const newOption = { label: `Option ${currentOptions.length + 1}`, value: `option-${currentOptions.length + 1}` };
+    const newOption = {
+      label: `Option ${currentOptions.length + 1}`,
+      value: `option-${currentOptions.length + 1}`,
+    };
     handleFieldUpdate({ options: [...currentOptions, newOption] });
   };
 
@@ -41,14 +52,19 @@ export function PropertiesPanel() {
     handleFieldUpdate({ options: newOptions });
   };
 
-  const updateOption = (index: number, field: 'label' | 'value', value: string) => {
+  const updateOption = (
+    index: number,
+    field: "label" | "value",
+    value: string,
+  ) => {
     const currentOptions = selectedField.options || [];
     const newOptions = [...currentOptions];
     newOptions[index] = { ...newOptions[index], [field]: value };
     handleFieldUpdate({ options: newOptions });
   };
 
-  const needsOptions = selectedField.type === 'select' || selectedField.type === 'radio';
+  const needsOptions =
+    selectedField.type === "select" || selectedField.type === "radio";
 
   return (
     <div className="w-80 lg:w-96 border-l border-border bg-card p-4 h-full overflow-y-auto">
@@ -74,14 +90,16 @@ export function PropertiesPanel() {
         </div>
 
         {/* Input Type */}
-        {selectedField.type === 'input' && (
+        {selectedField.type === "input" && (
           <div className="space-y-2">
             <Label htmlFor="input-type">Input Type</Label>
             <Select
-              value={selectedField.inputType || 'text'}
-              onValueChange={(value: InputType) => handleFieldUpdate({ inputType: value })}
+              value={selectedField.inputType || "text"}
+              onValueChange={(value: InputType) =>
+                handleFieldUpdate({ inputType: value })
+              }
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select input type" />
               </SelectTrigger>
               <SelectContent>
@@ -98,13 +116,17 @@ export function PropertiesPanel() {
         )}
 
         {/* Placeholder */}
-        {(selectedField.type === 'input' || selectedField.type === 'textarea' || selectedField.type === 'select') && (
+        {(selectedField.type === "input" ||
+          selectedField.type === "textarea" ||
+          selectedField.type === "select") && (
           <div className="space-y-2">
             <Label htmlFor="field-placeholder">Placeholder</Label>
             <Input
               id="field-placeholder"
-              value={selectedField.placeholder || ''}
-              onChange={(e) => handleFieldUpdate({ placeholder: e.target.value })}
+              value={selectedField.placeholder || ""}
+              onChange={(e) =>
+                handleFieldUpdate({ placeholder: e.target.value })
+              }
               placeholder="Placeholder text"
             />
           </div>
@@ -113,18 +135,22 @@ export function PropertiesPanel() {
         {/* Default Value */}
         <div className="space-y-2">
           <Label htmlFor="field-default">Default Value</Label>
-          {selectedField.type === 'textarea' ? (
+          {selectedField.type === "textarea" ? (
             <Textarea
               id="field-default"
-              value={selectedField.defaultValue || ''}
-              onChange={(e) => handleFieldUpdate({ defaultValue: e.target.value })}
+              value={selectedField.defaultValue || ""}
+              onChange={(e) =>
+                handleFieldUpdate({ defaultValue: e.target.value })
+              }
               placeholder="Default value"
             />
           ) : (
             <Input
               id="field-default"
-              value={selectedField.defaultValue || ''}
-              onChange={(e) => handleFieldUpdate({ defaultValue: e.target.value })}
+              value={selectedField.defaultValue || ""}
+              onChange={(e) =>
+                handleFieldUpdate({ defaultValue: e.target.value })
+              }
               placeholder="Default value"
             />
           )}
@@ -150,13 +176,17 @@ export function PropertiesPanel() {
                   <Input
                     placeholder="Label"
                     value={option.label}
-                    onChange={(e) => updateOption(index, 'label', e.target.value)}
+                    onChange={(e) =>
+                      updateOption(index, "label", e.target.value)
+                    }
                     className="flex-1"
                   />
                   <Input
                     placeholder="Value"
                     value={option.value}
-                    onChange={(e) => updateOption(index, 'value', e.target.value)}
+                    onChange={(e) =>
+                      updateOption(index, "value", e.target.value)
+                    }
                     className="flex-1"
                   />
                   <Button
@@ -176,52 +206,62 @@ export function PropertiesPanel() {
         {/* Validation */}
         <div className="space-y-3">
           <Label>Validation</Label>
-          
+
           <div className="flex items-center space-x-2">
             <Switch
               id="required"
               checked={selectedField.validation?.required || false}
-              onCheckedChange={(checked) => 
-                handleFieldUpdate({ 
-                  validation: { ...selectedField.validation, required: checked } 
+              onCheckedChange={(checked) =>
+                handleFieldUpdate({
+                  validation: {
+                    ...selectedField.validation,
+                    required: checked,
+                  },
                 })
               }
             />
-            <Label htmlFor="required" className="text-sm">Required</Label>
+            <Label htmlFor="required" className="text-sm">
+              Required
+            </Label>
           </div>
 
-          {(selectedField.type === 'input' || selectedField.type === 'textarea') && (
+          {(selectedField.type === "input" ||
+            selectedField.type === "textarea") && (
             <>
               <div className="space-y-2">
                 <Label htmlFor="min-length">Min Length</Label>
                 <Input
                   id="min-length"
                   type="number"
-                  value={selectedField.validation?.min || ''}
-                  onChange={(e) => 
-                    handleFieldUpdate({ 
-                      validation: { 
-                        ...selectedField.validation, 
-                        min: e.target.value ? parseInt(e.target.value) : undefined 
-                      } 
+                  value={selectedField.validation?.min || ""}
+                  onChange={(e) =>
+                    handleFieldUpdate({
+                      validation: {
+                        ...selectedField.validation,
+                        min: e.target.value
+                          ? parseInt(e.target.value)
+                          : undefined,
+                      },
                     })
                   }
                   placeholder="Minimum length"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="max-length">Max Length</Label>
                 <Input
                   id="max-length"
                   type="number"
-                  value={selectedField.validation?.max || ''}
-                  onChange={(e) => 
-                    handleFieldUpdate({ 
-                      validation: { 
-                        ...selectedField.validation, 
-                        max: e.target.value ? parseInt(e.target.value) : undefined 
-                      } 
+                  value={selectedField.validation?.max || ""}
+                  onChange={(e) =>
+                    handleFieldUpdate({
+                      validation: {
+                        ...selectedField.validation,
+                        max: e.target.value
+                          ? parseInt(e.target.value)
+                          : undefined,
+                      },
                     })
                   }
                   placeholder="Maximum length"

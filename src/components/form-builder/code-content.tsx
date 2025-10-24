@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { CodeExport } from './code-export';
+import { CodeExport } from "./code-export";
 
 export function CodeContent() {
   return (
-    <div className="flex-1 overflow-auto relative bg-background">
-      <div className="h-full p-4 lg:p-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-6">
+    <div className="flex-1 bg-sidebar">
+      <div className="h-full">
+        <div>
+          <div className="space-y-2 border-b p-4 h-[93px]">
             <h2 className="text-2xl font-semibold text-foreground mb-2">
               Export Code
             </h2>

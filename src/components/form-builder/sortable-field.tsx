@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { FormField } from '@/types/form';
-import { useFormStore } from '@/store/form-store';
-import { Button } from '@/components/ui/button';
-import { Trash2, GripVertical } from 'lucide-react';
-import { FieldRenderer } from './field-renderer';
+import { Button } from "@/components/ui/button";
+import { useFormStore } from "@/store/form-store";
+import { FormField } from "@/types/form";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { GripVertical, Trash2 } from "lucide-react";
+import { FieldRenderer } from "./field-renderer";
 
 interface SortableFieldProps {
   field: FormField;
@@ -36,9 +36,9 @@ export function SortableField({ field }: SortableFieldProps) {
       ref={setNodeRef}
       style={style}
       className={`
-        relative group rounded-lg p-4 bg-background/50
-        ${isDragging ? 'opacity-50' : ''}
-        ${isSelected ? 'ring-2 ring-primary bg-primary/5' : 'hover:bg-primary/5'}
+        relative group
+        ${isDragging ? "opacity-50" : "p-3 rounded"}
+        ${isSelected ? "border rounded py-3" : "hover:bg-primary/5"}
         transition-colors
       `}
       onClick={() => setSelectedField(field.id)}

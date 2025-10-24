@@ -1,11 +1,11 @@
-import { FormConfig, FormField } from '@/types/form';
+import { FormConfig } from '@/types/form';
 
 export function generateZodSchema(formConfig: FormConfig): string {
   const imports = `import { z } from 'zod';`;
-  
+
   const schemaFields = formConfig.fields.map(field => {
     let fieldSchema = '';
-    
+
     switch (field.type) {
       case 'input':
       case 'textarea':
@@ -33,14 +33,14 @@ export function generateZodSchema(formConfig: FormConfig): string {
       default:
         fieldSchema = 'z.string()';
     }
-    
+
     if (!field.validation?.required) {
       fieldSchema += '.optional()';
     }
-    
+
     return `  ${field.id}: ${fieldSchema}, // ${field.label}`;
   }).join('\n');
-  
+
   const schema = `
 const formSchema = z.object({
 ${schemaFields}
@@ -82,7 +82,7 @@ import { formSchema, FormData } from './schema';`;
 
   const formFields = formConfig.fields.map(field => {
     let fieldComponent = '';
-    
+
     switch (field.type) {
       case 'input':
         fieldComponent = `<Input type="${field.inputType || 'text'}" placeholder="${field.placeholder || ''}" {...field} />`;
@@ -91,7 +91,7 @@ import { formSchema, FormData } from './schema';`;
         fieldComponent = `<Textarea placeholder="${field.placeholder || ''}" {...field} />`;
         break;
       case 'select':
-        const selectOptions = field.options?.map(opt => 
+        const selectOptions = field.options?.map(opt =>
           `                    <SelectItem value="${opt.value}">${opt.label}</SelectItem>`
         ).join('\n') || '';
         fieldComponent = `<Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -110,7 +110,7 @@ ${selectOptions}
                 </div>`;
         break;
       case 'radio':
-        const radioOptions = field.options?.map(opt => 
+        const radioOptions = field.options?.map(opt =>
           `                    <div className="flex items-center space-x-2">
                       <RadioGroupItem value="${opt.value}" />
                       <Label>${opt.label}</Label>
@@ -129,7 +129,7 @@ ${radioOptions}
     }
 
     const showLabel = field.type !== 'checkbox' && field.type !== 'switch';
-    
+
     return `        <FormField
           control={form.control}
           name="${field.id}"

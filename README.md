@@ -1,4 +1,4 @@
-# formcn - DX-First Dynamic Form Builder
+# Better Form - DX-First Dynamic Form Builder
 
 A next-generation **developer-first dynamic form builder** designed for React/Next.js projects. Built with Next.js, TailwindCSS, and Shadcn/UI.
 
@@ -26,23 +26,26 @@ A next-generation **developer-first dynamic form builder** designed for React/Ne
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
-cd formcn
+cd betterform
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Run the development server:
+
 ```bash
 npm run dev
 ```
@@ -96,28 +99,33 @@ src/
 ## Development Roadmap
 
 ### Phase 1: Core Setup ✅
+
 - [x] Next.js + TailwindCSS + Shadcn/UI integration
 - [x] FormConfig model and Zustand state management
 - [x] Basic UI layout (Canvas, Sidebar, Properties Panel)
 
 ### Phase 2: Field Builder ✅
+
 - [x] Drag-and-drop support with dnd-kit
 - [x] Field addition and removal
 - [x] Field property editing
 - [x] Live preview panel
 
 ### Phase 3: Validation & Logic (In Progress)
+
 - [x] Zod schema generation
 - [x] Basic validation rules
 - [ ] Conditional logic (show/hide fields)
 - [ ] Advanced validation patterns
 
 ### Phase 4: Code Export (Planned)
+
 - [ ] React + Zod + React Hook Form component generation
 - [ ] JSON configuration export
 - [ ] TypeScript type generation
 
 ### Phase 5: DX Enhancements (Planned)
+
 - [ ] Command Palette
 - [ ] Keyboard shortcuts
 - [ ] Form templates

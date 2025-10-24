@@ -1,13 +1,16 @@
-'use client';
+"use client";
 
-import { useState, useRef, useCallback } from 'react';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useFormStore } from '@/store/form-store';
-import { SortableField } from './sortable-field';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Edit2, ZoomIn, ZoomOut, RotateCcw, Plus } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useFormStore } from "@/store/form-store";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { Edit2, Plus, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
+import { useCallback, useRef, useState } from "react";
+import { SortableField } from "./sortable-field";
 
 export function Canvas() {
   const { formConfig, updateFormMeta } = useFormStore();
@@ -22,22 +25,22 @@ export function Canvas() {
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleTitleSubmit = (value: string) => {
-    updateFormMeta({ name: value || 'Untitled Form' });
+    updateFormMeta({ name: value || "Untitled Form" });
     setEditingTitle(false);
   };
 
   const handleDescriptionSubmit = (value: string) => {
-    updateFormMeta({ description: value || 'Form description' });
+    updateFormMeta({ description: value || "Form description" });
     setEditingDescription(false);
   };
 
   // Zoom functionality
   const handleZoomIn = () => {
-    setZoom(prev => Math.min(prev + 10, 200));
+    setZoom((prev) => Math.min(prev + 10, 200));
   };
 
   const handleZoomOut = () => {
-    setZoom(prev => Math.max(prev - 10, 50));
+    setZoom((prev) => Math.max(prev - 10, 50));
   };
 
   const handleResetZoom = () => {
@@ -46,27 +49,38 @@ export function Canvas() {
   };
 
   // Canvas panning functionality
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    // Only start panning if clicking on the canvas background, not on form elements
-    const target = e.target as HTMLElement;
-    const isCanvasBackground = target === canvasRef.current ||
-      target.classList.contains('canvas-background');
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      // Only start panning if clicking on the canvas background, not on form elements
+      const target = e.target as HTMLElement;
+      const isCanvasBackground =
+        target === canvasRef.current ||
+        target.classList.contains("canvas-background");
 
-    if (isCanvasBackground && e.button === 0) { // Only left mouse button
-      setIsDragging(true);
-      setDragStart({ x: e.clientX - canvasOffset.x, y: e.clientY - canvasOffset.y });
-      e.preventDefault();
-    }
-  }, [canvasOffset]);
+      if (isCanvasBackground && e.button === 0) {
+        // Only left mouse button
+        setIsDragging(true);
+        setDragStart({
+          x: e.clientX - canvasOffset.x,
+          y: e.clientY - canvasOffset.y,
+        });
+        e.preventDefault();
+      }
+    },
+    [canvasOffset],
+  );
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (isDragging) {
-      setCanvasOffset({
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y
-      });
-    }
-  }, [isDragging, dragStart]);
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (isDragging) {
+        setCanvasOffset({
+          x: e.clientX - dragStart.x,
+          y: e.clientY - dragStart.y,
+        });
+      }
+    },
+    [isDragging, dragStart],
+  );
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
@@ -77,7 +91,7 @@ export function Canvas() {
     if (e.ctrlKey || e.metaKey) {
       e.preventDefault();
       const delta = e.deltaY > 0 ? -10 : 10;
-      setZoom(prev => Math.max(50, Math.min(200, prev + delta)));
+      setZoom((prev) => Math.max(50, Math.min(200, prev + delta)));
     }
     // Prevent default scrolling behavior on canvas
     e.preventDefault();
@@ -88,7 +102,7 @@ export function Canvas() {
   const scaledSpacing = dotSpacing * (zoom / 100);
 
   return (
-    <div className="w-full h-full flex flex-col relative bg-[#1a1a1a]">
+    <div className="w-full h-full flex flex-col relative dark:bg-transparent bg-muted-foreground">
       {/* Zoom Controls - Bottom Right */}
       <div className="absolute bottom-4 right-4 z-10">
         <div className="flex items-center gap-2 bg-card border rounded-lg p-2 shadow-sm">
@@ -101,7 +115,7 @@ export function Canvas() {
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
-          <span className="text-sm font-medium min-w-[3rem] text-center">
+          <span className="text-sm font-medium min-w-12 text-center">
             {zoom}%
           </span>
           <Button
@@ -129,12 +143,14 @@ export function Canvas() {
       {/* Canvas Area with Dotted Background */}
       <div
         ref={canvasRef}
-        className="flex-1 overflow-hidden relative bg-muted/90"
+        className="flex-1 overflow-hidden relative bg-muted"
         style={{
-          cursor: isDragging ? 'grabbing' : 'default',
+          cursor: isDragging ? "grabbing" : "default",
           backgroundImage: `radial-gradient(circle, rgba(255, 255, 255, 0.15) ${dotSize}px, transparent ${dotSize}px)`,
           backgroundSize: `${scaledSpacing}px ${scaledSpacing}px`,
-          backgroundPosition: `${canvasOffset.x % scaledSpacing}px ${canvasOffset.y % scaledSpacing}px`,
+          backgroundPosition: `${canvasOffset.x % scaledSpacing}px ${
+            canvasOffset.y % scaledSpacing
+          }px`,
         }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -149,25 +165,27 @@ export function Canvas() {
           ref={contentRef}
           className="absolute inset-0"
           style={{
-            transform: `translate(${canvasOffset.x}px, ${canvasOffset.y}px) scale(${zoom / 100})`,
-            transformOrigin: '0 0'
+            transform: `translate(${canvasOffset.x}px, ${
+              canvasOffset.y
+            }px) scale(${zoom / 100})`,
+            transformOrigin: "0 0",
           }}
         >
           {/* Centered Form Container */}
           <div className="flex items-start justify-center w-full h-full pt-16">
-            <div className="w-full max-w-2xl mx-8">
+            <div className="w-full max-w-2xl space-y-6">
               {/* Form Header */}
-              <div className="mb-8 bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+              <div className="rounded-lg p-6 border bg-sidebar ">
                 {editingTitle ? (
                   <Input
                     defaultValue={formConfig.name}
-                    className="text-2xl font-semibold border-none p-0 h-auto bg-transparent focus-visible:ring-0"
+                    className="text-2xl font-semibold border-none p-1 h-auto shadow-none rounded-none focus-visible:ring-0 focus-visible:bg-muted/50"
                     onBlur={(e) => handleTitleSubmit(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
+                      if (e.key === "Enter") {
                         handleTitleSubmit(e.currentTarget.value);
                       }
-                      if (e.key === 'Escape') {
+                      if (e.key === "Escape") {
                         setEditingTitle(false);
                       }
                     }}
@@ -188,14 +206,14 @@ export function Canvas() {
                 {editingDescription ? (
                   <Textarea
                     defaultValue={formConfig.description}
-                    className="text-sm text-muted-foreground mt-2 border-none p-0 bg-transparent focus-visible:ring-0 resize-none"
+                    className="text-sm text-muted-foreground mt-2 border-none p-1 focus-visible:ring-0 resize-none shadow-none rounded-none focus-visible:bg-muted/50"
                     onBlur={(e) => handleDescriptionSubmit(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
+                      if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();
                         handleDescriptionSubmit(e.currentTarget.value);
                       }
-                      if (e.key === 'Escape') {
+                      if (e.key === "Escape") {
                         setEditingDescription(false);
                       }
                     }}
@@ -217,23 +235,27 @@ export function Canvas() {
 
               {/* Form Fields Area */}
               <div
-                className="min-h-[500px] border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 bg-white dark:bg-gray-900 shadow-lg"
-                style={{ cursor: 'default' }}
+                className="min-h-[500px] rounded-lg p-6 border bg-sidebar"
+                style={{ cursor: "default" }}
                 onMouseDown={(e) => e.stopPropagation()}
               >
                 {formConfig.fields.length === 0 ? (
                   <div className="flex items-center justify-center h-64">
-                    <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                        <Plus className="h-8 w-8 text-gray-400" />
+                    <div className="text-center space-y-2">
+                      <div className="mx-auto bg-muted h-14 w-14 aspect-square rounded flex items-center justify-center">
+                        <Plus className="h-8 w-8 text-muted-foreground" />
                       </div>
-                      <p className="text-lg mb-2 font-medium text-gray-700 dark:text-gray-300">No fields yet</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Click the + button in the sidebar to add fields</p>
+                      <p className="text-lg font-medium text-muted-foreground">
+                        No fields yet
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Click the + button in the sidebar to add fields
+                      </p>
                     </div>
                   </div>
                 ) : (
                   <SortableContext
-                    items={formConfig.fields.map(field => field.id)}
+                    items={formConfig.fields.map((field) => field.id)}
                     strategy={verticalListSortingStrategy}
                   >
                     <div className="space-y-4">
@@ -250,13 +272,13 @@ export function Canvas() {
       </div>
 
       {/* Canvas Instructions */}
-      <div className="absolute bottom-4 left-4 bg-card border rounded-lg p-3 shadow-sm text-xs text-muted-foreground max-w-48">
-        <div className="space-y-1">
-          <div>• Click + in sidebar to add fields</div>
-          <div>• Drag canvas background to pan</div>
-          <div>• Ctrl/Cmd + Scroll to zoom</div>
-          <div>• Drag fields to reorder</div>
-        </div>
+      <div className="absolute bottom-4 left-4 bg-card border rounded p-3 text-xs text-muted-foreground max-w-48">
+        <ol className="space-y-1">
+          <li>Click + in sidebar to add fields</li>
+          <li>Drag canvas background to pan</li>
+          <li>Ctrl/Cmd + Scroll to zoom</li>
+          <li>Drag fields to reorder</li>
+        </ol>
       </div>
     </div>
   );

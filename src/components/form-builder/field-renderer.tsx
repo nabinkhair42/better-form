@@ -1,13 +1,13 @@
 'use client';
 
-import { FormField } from '@/types/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Switch } from '@/components/ui/switch';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { FormField } from '@/types/form';
 
 interface FieldRendererProps {
   field: FormField;
@@ -18,23 +18,23 @@ export function FieldRenderer({ field }: FieldRendererProps) {
     switch (field.type) {
       case 'input':
         return (
-          <Input 
+          <Input
             type={field.inputType || 'text'}
-            placeholder={field.placeholder || 'Enter text...'} 
+            placeholder={field.placeholder || 'Enter text...'}
             defaultValue={field.defaultValue}
             disabled
           />
         );
-      
+
       case 'textarea':
         return (
-          <Textarea 
-            placeholder={field.placeholder || 'Enter text...'} 
+          <Textarea
+            placeholder={field.placeholder || 'Enter text...'}
             defaultValue={field.defaultValue}
             disabled
           />
         );
-      
+
       case 'select':
         return (
           <Select disabled>
@@ -50,7 +50,7 @@ export function FieldRenderer({ field }: FieldRendererProps) {
             </SelectContent>
           </Select>
         );
-      
+
       case 'checkbox':
         return (
           <div className="flex items-center space-x-2">
@@ -58,7 +58,7 @@ export function FieldRenderer({ field }: FieldRendererProps) {
             <Label htmlFor={field.id}>{field.label}</Label>
           </div>
         );
-      
+
       case 'radio':
         return (
           <RadioGroup disabled defaultValue={field.defaultValue}>
@@ -70,7 +70,7 @@ export function FieldRenderer({ field }: FieldRendererProps) {
             ))}
           </RadioGroup>
         );
-      
+
       case 'switch':
         return (
           <div className="flex items-center space-x-2">
@@ -78,7 +78,7 @@ export function FieldRenderer({ field }: FieldRendererProps) {
             <Label htmlFor={field.id}>{field.label}</Label>
           </div>
         );
-      
+
       default:
         return <div className="text-muted-foreground">Unknown field type</div>;
     }

@@ -1,31 +1,30 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { useFormStore } from '@/store/form-store';
-import { Menu, X } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { useFormStore } from "@/store/form-store";
+import { Menu, X } from "lucide-react";
 
 interface HeaderProps {
-  activeTab: 'builder' | 'preview' | 'code';
-  onTabChange: (tab: 'builder' | 'preview' | 'code') => void;
+  activeTab: "builder" | "preview" | "code";
+  onTabChange: (tab: "builder" | "preview" | "code") => void;
   sidebarOpen: boolean;
   onSidebarToggle: () => void;
   propertiesOpen: boolean;
   onPropertiesToggle: () => void;
 }
 
-export function Header({ 
-  activeTab, 
-  onTabChange, 
-  sidebarOpen, 
+export function Header({
+  activeTab,
+  onTabChange,
+  sidebarOpen,
   onSidebarToggle,
-  propertiesOpen,
-  onPropertiesToggle 
+  onPropertiesToggle,
 }: HeaderProps) {
   const { formConfig, clearForm, selectedFieldId } = useFormStore();
 
   return (
     <header className="border-b border-border bg-card px-4 py-3">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Left side - Logo and mobile sidebar toggle */}
         <div className="flex items-center gap-3">
           <Button
@@ -34,47 +33,45 @@ export function Header({
             onClick={onSidebarToggle}
             className="lg:hidden h-8 w-8 p-0"
           >
-            {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            {sidebarOpen ? (
+              <X className="h-4 w-4" />
+            ) : (
+              <Menu className="h-4 w-4" />
+            )}
           </Button>
-          <h1 className="text-xl font-semibold text-foreground">
-            formcn
-          </h1>
+          <h1 className="text-xl font-semibold text-foreground">Better Form</h1>
         </div>
 
         {/* Center - Navigation tabs */}
         <div className="flex items-center gap-1 bg-muted p-1 rounded-lg">
           <Button
-            variant={activeTab === 'builder' ? 'default' : 'ghost'}
+            variant={activeTab === "builder" ? "default" : "ghost"}
             size="sm"
-            onClick={() => onTabChange('builder')}
+            onClick={() => onTabChange("builder")}
             className="h-8"
           >
             Builder
           </Button>
           <Button
-            variant={activeTab === 'preview' ? 'default' : 'ghost'}
+            variant={activeTab === "preview" ? "default" : "ghost"}
             size="sm"
-            onClick={() => onTabChange('preview')}
+            onClick={() => onTabChange("preview")}
             className="h-8"
           >
             Preview
           </Button>
           <Button
-            variant={activeTab === 'code' ? 'default' : 'ghost'}
+            variant={activeTab === "code" ? "default" : "ghost"}
             size="sm"
-            onClick={() => onTabChange('code')}
+            onClick={() => onTabChange("code")}
             className="h-8"
           >
             Code
           </Button>
         </div>
-        
+
         {/* Right side - Field count and actions */}
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground hidden sm:block">
-            {formConfig.fields.length} field{formConfig.fields.length !== 1 ? 's' : ''}
-          </span>
-          
           {/* Mobile properties toggle - only show when field is selected */}
           {selectedFieldId && (
             <Button
@@ -86,7 +83,7 @@ export function Header({
               <Menu className="h-4 w-4" />
             </Button>
           )}
-          
+
           <Button
             variant="outline"
             size="sm"

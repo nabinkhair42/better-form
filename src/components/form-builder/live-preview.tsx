@@ -1,18 +1,31 @@
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useFormStore } from '@/store/form-store';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Switch } from '@/components/ui/switch';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { useFormStore } from "@/store/form-store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 export function LivePreview() {
   const { formConfig } = useFormStore();
@@ -21,26 +34,30 @@ export function LivePreview() {
   const generateSchema = () => {
     const schemaFields: Record<string, z.ZodTypeAny> = {};
 
-    formConfig.fields.forEach(field => {
+    formConfig.fields.forEach((field) => {
       let fieldSchema: z.ZodTypeAny;
 
       switch (field.type) {
-        case 'input':
-        case 'textarea':
+        case "input":
+        case "textarea":
           fieldSchema = z.string();
           if (field.validation?.min) {
-            fieldSchema = (fieldSchema as z.ZodString).min(field.validation.min);
+            fieldSchema = (fieldSchema as z.ZodString).min(
+              field.validation.min,
+            );
           }
           if (field.validation?.max) {
-            fieldSchema = (fieldSchema as z.ZodString).max(field.validation.max);
+            fieldSchema = (fieldSchema as z.ZodString).max(
+              field.validation.max,
+            );
           }
           break;
-        case 'select':
-        case 'radio':
+        case "select":
+        case "radio":
           fieldSchema = z.string();
           break;
-        case 'checkbox':
-        case 'switch':
+        case "checkbox":
+        case "switch":
           fieldSchema = z.boolean();
           break;
         default:
@@ -48,9 +65,9 @@ export function LivePreview() {
       }
 
       if (field.validation?.required) {
-        if (field.type === 'checkbox' || field.type === 'switch') {
-          fieldSchema = fieldSchema.refine(val => val === true, {
-            message: `${field.label} is required`
+        if (field.type === "checkbox" || field.type === "switch") {
+          fieldSchema = fieldSchema.refine((val) => val === true, {
+            message: `${field.label} is required`,
           });
         }
       } else {
@@ -64,17 +81,22 @@ export function LivePreview() {
   };
 
   const schema = generateSchema();
-  const form = useForm({
+
+  type FormValues = z.infer<typeof schema>;
+
+  const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: formConfig.fields.reduce((acc, field) => {
-      acc[field.id] = field.defaultValue || (field.type === 'checkbox' || field.type === 'switch' ? false : '');
+      acc[field.id] =
+        field.defaultValue ||
+        (field.type === "checkbox" || field.type === "switch" ? false : "");
       return acc;
-    }, {} as Record<string, any>)
+    }, {} as Record<string, string | boolean>),
   });
 
-  const onSubmit = (values: any) => {
-    console.log('Form submitted:', values);
-    alert('Form submitted! Check console for values.');
+  const onSubmit = (values: FormValues) => {
+    console.log("Form submitted:", values);
+    alert("Form submitted! Check console for values.");
   };
 
   if (formConfig.fields.length === 0) {
@@ -86,8 +108,8 @@ export function LivePreview() {
   }
 
   return (
-    <div className="border rounded-lg p-6 bg-card shadow-sm">
-      <div className="mb-6">
+    <div className="max-w-xl p-4">
+      <div className="mb-5">
         <h3 className="text-xl font-semibold text-foreground mb-2">
           {formConfig.name}
         </h3>
@@ -97,7 +119,7 @@ export function LivePreview() {
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {formConfig.fields.map((field) => (
             <FormField
               key={field.id}
@@ -105,71 +127,82 @@ export function LivePreview() {
               name={field.id}
               render={({ field: formField }) => (
                 <FormItem>
-                  {field.type !== 'checkbox' && field.type !== 'switch' && (
+                  {field.type !== "checkbox" && field.type !== "switch" && (
                     <FormLabel>{field.label}</FormLabel>
                   )}
                   <FormControl>
                     {(() => {
                       switch (field.type) {
-                        case 'input':
+                        case "input":
                           return (
                             <Input
-                              type={field.inputType || 'text'}
+                              type={field.inputType || "text"}
                               placeholder={field.placeholder}
                               {...formField}
+                              value={formField.value as string}
                             />
                           );
-                        case 'textarea':
+                        case "textarea":
                           return (
                             <Textarea
                               placeholder={field.placeholder}
                               {...formField}
+                              value={formField.value as string}
                             />
                           );
-                        case 'select':
+                        case "select":
                           return (
-                            <Select onValueChange={formField.onChange} defaultValue={formField.value}>
+                            <Select
+                              onValueChange={formField.onChange}
+                              defaultValue={formField.value as string}
+                            >
                               <SelectTrigger>
                                 <SelectValue placeholder={field.placeholder} />
                               </SelectTrigger>
                               <SelectContent>
                                 {field.options?.map((option) => (
-                                  <SelectItem key={option.value} value={option.value}>
+                                  <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
                                     {option.label}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>
                           );
-                        case 'checkbox':
+                        case "checkbox":
                           return (
                             <div className="flex items-center space-x-2">
                               <Checkbox
-                                checked={formField.value}
+                                checked={formField.value as boolean}
                                 onCheckedChange={formField.onChange}
                               />
                               <Label>{field.label}</Label>
                             </div>
                           );
-                        case 'radio':
+                        case "radio":
                           return (
                             <RadioGroup
                               onValueChange={formField.onChange}
-                              defaultValue={formField.value}
+                              defaultValue={formField.value as string}
                             >
                               {field.options?.map((option) => (
-                                <div key={option.value} className="flex items-center space-x-2">
+                                <div
+                                  key={option.value}
+                                  className="flex items-center space-x-2"
+                                >
                                   <RadioGroupItem value={option.value} />
                                   <Label>{option.label}</Label>
                                 </div>
                               ))}
                             </RadioGroup>
                           );
-                        case 'switch':
+                        case "switch":
                           return (
                             <div className="flex items-center space-x-2">
                               <Switch
-                                checked={formField.value}
+                                checked={formField.value as boolean}
                                 onCheckedChange={formField.onChange}
                               />
                               <Label>{field.label}</Label>
