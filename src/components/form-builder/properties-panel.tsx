@@ -80,9 +80,9 @@ export function PropertiesPanel() {
     selectedField.type === "select" || selectedField.type === "radio";
 
   return (
-    <div className="w-64 lg:w-72 border-r border-border bg-popover h-full overflow-y-auto">
+    <div className="w-64 lg:w-72 border-r border bg-sidebar h-full overflow-y-auto">
       <div className="p-3 border-b h-[93px]">
-        <h3 className="text-lg font-semibold text-foreground mb-2">
+        <h3 className="text-lg font-semibold text-foreground">
           Field Properties
         </h3>
         <p className="text-sm text-muted-foreground capitalize">

@@ -2,10 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { CodeBlockClient } from "@/components/ui/extended/code-block-client";
-import {
-  generateReactComponent,
-  generateZodSchema,
-} from "@/lib/code-generator";
+import { generateReactComponent, generateZodSchema } from "@/lib/code-generator";
 import { useFormStore } from "@/store/form-store";
 import { useState } from "react";
 export function CodeExport() {

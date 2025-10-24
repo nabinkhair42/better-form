@@ -25,6 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useFormStore } from "@/store/form-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 export function LivePreview() {
@@ -96,7 +97,16 @@ export function LivePreview() {
 
   const onSubmit = (values: FormValues) => {
     console.log("Form submitted:", values);
-    alert("Form submitted! Check console for values.");
+    toast.custom(() => (
+      <>
+        <div className="bg-card p-3 border w-96">
+          <h4 className="font-semibold">Form Submitted</h4>
+          <pre className="bg-muted font-mono max-h-16 overflow-auto">
+            {JSON.stringify(values, null, 2)}
+          </pre>
+        </div>
+      </>
+    ));
   };
 
   if (formConfig.fields.length === 0) {
