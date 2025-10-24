@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { generateFieldId } from "@/lib/field-utils";
 import { useFormStore } from "@/store/form-store";
 import { FormFieldType } from "@/types/form";
 import {
@@ -72,14 +73,14 @@ const getFieldIcon = (type: FormFieldType) => {
 };
 
 export function Sidebar() {
-  const { addField } = useFormStore();
+  const { addField, formConfig } = useFormStore();
 
   const handleAddField = (fieldType: (typeof fieldTypes)[0]) => {
-    const generateFieldId = () =>
-      `field-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    const existingIds = formConfig.fields.map((f) => f.id);
+    const fieldId = generateFieldId(fieldType.label, existingIds);
 
     const newField = {
-      id: generateFieldId(),
+      id: fieldId,
       type: fieldType.type,
       inputType: fieldType.type === "input" ? ("text" as const) : undefined,
       label: fieldType.label,

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { generateFieldId } from "@/lib/field-utils";
 import { useFormStore } from "@/store/form-store";
 import { InputType } from "@/types/form";
 import { Plus, Trash2 } from "lucide-react";
@@ -35,6 +36,18 @@ export function PropertiesPanel() {
 
   const handleFieldUpdate = (updates: Partial<typeof selectedField>) => {
     updateField(selectedField.id, updates);
+  };
+
+  const handleLabelChange = (newLabel: string) => {
+    const existingIds = formConfig.fields
+      .filter((f) => f.id !== selectedField.id)
+      .map((f) => f.id);
+    const newId = generateFieldId(newLabel, existingIds);
+
+    handleFieldUpdate({
+      label: newLabel,
+      id: newId,
+    });
   };
 
   const addOption = () => {
@@ -84,7 +97,7 @@ export function PropertiesPanel() {
           <Input
             id="field-label"
             value={selectedField.label}
-            onChange={(e) => handleFieldUpdate({ label: e.target.value })}
+            onChange={(e) => handleLabelChange(e.target.value)}
             placeholder="Field label"
           />
         </div>

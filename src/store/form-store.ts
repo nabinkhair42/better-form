@@ -53,6 +53,11 @@ export const useFormStore = create<FormStore>((set) => ({
           field.id === fieldId ? { ...field, ...updates } : field,
         ),
       },
+      // If the field ID is being updated, update selectedFieldId too
+      selectedFieldId:
+        state.selectedFieldId === fieldId && updates.id
+          ? updates.id
+          : state.selectedFieldId,
     })),
 
   removeField: (fieldId) =>
