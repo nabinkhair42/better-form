@@ -1,13 +1,19 @@
-'use client';
+"use client";
 
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
-import { FormField } from '@/types/form';
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { FormField } from "@/types/form";
 
 interface FieldRendererProps {
   field: FormField;
@@ -16,30 +22,32 @@ interface FieldRendererProps {
 export function FieldRenderer({ field }: FieldRendererProps) {
   const renderField = () => {
     switch (field.type) {
-      case 'input':
+      case "input":
         return (
           <Input
-            type={field.inputType || 'text'}
-            placeholder={field.placeholder || 'Enter text...'}
+            type={field.inputType || "text"}
+            placeholder={field.placeholder || "Enter text..."}
             defaultValue={field.defaultValue}
             disabled
           />
         );
 
-      case 'textarea':
+      case "textarea":
         return (
           <Textarea
-            placeholder={field.placeholder || 'Enter text...'}
+            placeholder={field.placeholder || "Enter text..."}
             defaultValue={field.defaultValue}
             disabled
           />
         );
 
-      case 'select':
+      case "select":
         return (
           <Select disabled>
-            <SelectTrigger>
-              <SelectValue placeholder={field.placeholder || 'Select an option'} />
+            <SelectTrigger className="w-full">
+              <SelectValue
+                placeholder={field.placeholder || "Select an option"}
+              />
             </SelectTrigger>
             <SelectContent>
               {field.options?.map((option) => (
@@ -51,30 +59,43 @@ export function FieldRenderer({ field }: FieldRendererProps) {
           </Select>
         );
 
-      case 'checkbox':
+      case "checkbox":
         return (
           <div className="flex items-center space-x-2">
-            <Checkbox id={field.id} disabled defaultChecked={field.defaultValue} />
+            <Checkbox
+              id={field.id}
+              disabled
+              defaultChecked={field.defaultValue}
+            />
             <Label htmlFor={field.id}>{field.label}</Label>
           </div>
         );
 
-      case 'radio':
+      case "radio":
         return (
           <RadioGroup disabled defaultValue={field.defaultValue}>
             {field.options?.map((option) => (
               <div key={option.value} className="flex items-center space-x-2">
-                <RadioGroupItem value={option.value} id={`${field.id}-${option.value}`} />
-                <Label htmlFor={`${field.id}-${option.value}`}>{option.label}</Label>
+                <RadioGroupItem
+                  value={option.value}
+                  id={`${field.id}-${option.value}`}
+                />
+                <Label htmlFor={`${field.id}-${option.value}`}>
+                  {option.label}
+                </Label>
               </div>
             ))}
           </RadioGroup>
         );
 
-      case 'switch':
+      case "switch":
         return (
           <div className="flex items-center space-x-2">
-            <Switch id={field.id} disabled defaultChecked={field.defaultValue} />
+            <Switch
+              id={field.id}
+              disabled
+              defaultChecked={field.defaultValue}
+            />
             <Label htmlFor={field.id}>{field.label}</Label>
           </div>
         );
@@ -86,7 +107,7 @@ export function FieldRenderer({ field }: FieldRendererProps) {
 
   return (
     <div className="space-y-2">
-      {field.type !== 'checkbox' && field.type !== 'switch' && (
+      {field.type !== "checkbox" && field.type !== "switch" && (
         <Label className="text-sm font-medium">{field.label}</Label>
       )}
       {renderField()}

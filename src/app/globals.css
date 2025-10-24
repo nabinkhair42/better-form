@@ -138,12 +138,11 @@
   -khtml-user-drag: none;
   -moz-user-drag: none;
   -o-user-drag: none;
-  user-drag: none;
 }
 
 /* Dotted canvas background */
 .canvas-dotted-bg {
-  background-image: 
+  background-image:
     radial-gradient(circle at 1px 1px, hsl(var(--muted-foreground) / 0.4) 1px, transparent 0);
   background-size: 20px 20px;
   background-position: 0 0;
@@ -155,4 +154,32 @@
   .canvas-container {
     touch-action: pan-x pan-y;
   }
+}
+
+
+/* Shiki dual theme support for code blocks */
+.shiki {
+  font-size: 0.95em;
+  line-height: 1.6;
+  padding: 4px 0 0px 4px;
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+}
+
+html.dark .shiki,
+html.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+html:not(.dark) .shiki,
+html:not(.dark) .shiki span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+  font-style: var(--shiki-light-font-style) !important;
+  font-weight: var(--shiki-light-font-weight) !important;
+  text-decoration: var(--shiki-light-text-decoration) !important;
 }

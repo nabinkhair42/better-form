@@ -108,7 +108,7 @@ export function LivePreview() {
   }
 
   return (
-    <div className="max-w-xl p-4">
+    <div className="p-4">
       <div className="mb-5">
         <h3 className="text-xl font-semibold text-foreground mb-2">
           {formConfig.name}
@@ -156,7 +156,7 @@ export function LivePreview() {
                               onValueChange={formField.onChange}
                               defaultValue={formField.value as string}
                             >
-                              <SelectTrigger>
+                              <SelectTrigger className="w-full">
                                 <SelectValue placeholder={field.placeholder} />
                               </SelectTrigger>
                               <SelectContent>

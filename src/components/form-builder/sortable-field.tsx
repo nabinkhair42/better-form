@@ -37,7 +37,7 @@ export function SortableField({ field }: SortableFieldProps) {
       style={style}
       className={`
         relative group
-        ${isDragging ? "opacity-50" : "p-3 rounded"}
+        ${isDragging ? "opacity-50" : "py-3 rounded"}
         ${isSelected ? "border rounded py-3" : "hover:bg-primary/5"}
         transition-colors
       `}

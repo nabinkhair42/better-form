@@ -1,45 +1,49 @@
-import { FormConfig } from '@/types/form';
+import { FormConfig } from "@/types/form";
 
 export function generateZodSchema(formConfig: FormConfig): string {
   const imports = `import { z } from 'zod';`;
 
-  const schemaFields = formConfig.fields.map(field => {
-    let fieldSchema = '';
+  const schemaFields = formConfig.fields
+    .map((field) => {
+      let fieldSchema = "";
 
-    switch (field.type) {
-      case 'input':
-      case 'textarea':
-        fieldSchema = 'z.string()';
-        if (field.validation?.min) {
-          fieldSchema += `.min(${field.validation.min})`;
-        }
-        if (field.validation?.max) {
-          fieldSchema += `.max(${field.validation.max})`;
-        }
-        break;
-      case 'select':
-      case 'radio':
-        if (field.options && field.options.length > 0) {
-          const enumValues = field.options.map(opt => `"${opt.value}"`).join(', ');
-          fieldSchema = `z.enum([${enumValues}])`;
-        } else {
-          fieldSchema = 'z.string()';
-        }
-        break;
-      case 'checkbox':
-      case 'switch':
-        fieldSchema = 'z.boolean()';
-        break;
-      default:
-        fieldSchema = 'z.string()';
-    }
+      switch (field.type) {
+        case "input":
+        case "textarea":
+          fieldSchema = "z.string()";
+          if (field.validation?.min) {
+            fieldSchema += `.min(${field.validation.min})`;
+          }
+          if (field.validation?.max) {
+            fieldSchema += `.max(${field.validation.max})`;
+          }
+          break;
+        case "select":
+        case "radio":
+          if (field.options && field.options.length > 0) {
+            const enumValues = field.options
+              .map((opt) => `"${opt.value}"`)
+              .join(", ");
+            fieldSchema = `z.enum([${enumValues}])`;
+          } else {
+            fieldSchema = "z.string()";
+          }
+          break;
+        case "checkbox":
+        case "switch":
+          fieldSchema = "z.boolean()";
+          break;
+        default:
+          fieldSchema = "z.string()";
+      }
 
-    if (!field.validation?.required) {
-      fieldSchema += '.optional()';
-    }
+      if (!field.validation?.required) {
+        fieldSchema += ".optional()";
+      }
 
-    return `  ${field.id}: ${fieldSchema}, // ${field.label}`;
-  }).join('\n');
+      return `  ${field.id}: ${fieldSchema}, // ${field.label}`;
+    })
+    .join("\n");
 
   const schema = `
 const formSchema = z.object({
@@ -75,67 +79,86 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { formSchema, FormData } from './schema';`;
 
-  const defaultValues = formConfig.fields.map(field => {
-    const defaultValue = field.defaultValue || (field.type === 'checkbox' || field.type === 'switch' ? false : '');
-    return `    ${field.id}: ${JSON.stringify(defaultValue)},`;
-  }).join('\n');
+  const defaultValues = formConfig.fields
+    .map((field) => {
+      const defaultValue =
+        field.defaultValue ||
+        (field.type === "checkbox" || field.type === "switch" ? false : "");
+      return `    ${field.id}: ${JSON.stringify(defaultValue)},`;
+    })
+    .join("\n");
 
-  const formFields = formConfig.fields.map(field => {
-    let fieldComponent = '';
+  const formFields = formConfig.fields
+    .map((field) => {
+      let fieldComponent = "";
 
-    switch (field.type) {
-      case 'input':
-        fieldComponent = `<Input type="${field.inputType || 'text'}" placeholder="${field.placeholder || ''}" {...field} />`;
-        break;
-      case 'textarea':
-        fieldComponent = `<Textarea placeholder="${field.placeholder || ''}" {...field} />`;
-        break;
-      case 'select':
-        const selectOptions = field.options?.map(opt =>
-          `                    <SelectItem value="${opt.value}">${opt.label}</SelectItem>`
-        ).join('\n') || '';
-        fieldComponent = `<Select onValueChange={field.onChange} defaultValue={field.value}>
+      switch (field.type) {
+        case "input":
+          fieldComponent = `<Input type="${
+            field.inputType || "text"
+          }" placeholder="${field.placeholder || ""}" {...field} />`;
+          break;
+        case "textarea":
+          fieldComponent = `<Textarea placeholder="${
+            field.placeholder || ""
+          }" {...field} />`;
+          break;
+        case "select":
+          const selectOptions =
+            field.options
+              ?.map(
+                (opt) =>
+                  `                    <SelectItem value="${opt.value}">${opt.label}</SelectItem>`,
+              )
+              .join("\n") || "";
+          fieldComponent = `<Select onValueChange={field.onChange} defaultValue={field.value}>
                   <SelectTrigger>
-                    <SelectValue placeholder="${field.placeholder || 'Select an option'}" />
+                    <SelectValue placeholder="${
+                      field.placeholder || "Select an option"
+                    }" />
                   </SelectTrigger>
                   <SelectContent>
 ${selectOptions}
                   </SelectContent>
                 </Select>`;
-        break;
-      case 'checkbox':
-        fieldComponent = `<div className="flex items-center space-x-2">
+          break;
+        case "checkbox":
+          fieldComponent = `<div className="flex items-center space-x-2">
                   <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                   <Label>${field.label}</Label>
                 </div>`;
-        break;
-      case 'radio':
-        const radioOptions = field.options?.map(opt =>
-          `                    <div className="flex items-center space-x-2">
+          break;
+        case "radio":
+          const radioOptions =
+            field.options
+              ?.map(
+                (opt) =>
+                  `                    <div className="flex items-center space-x-2">
                       <RadioGroupItem value="${opt.value}" />
                       <Label>${opt.label}</Label>
-                    </div>`
-        ).join('\n') || '';
-        fieldComponent = `<RadioGroup onValueChange={field.onChange} defaultValue={field.value}>
+                    </div>`,
+              )
+              .join("\n") || "";
+          fieldComponent = `<RadioGroup onValueChange={field.onChange} defaultValue={field.value}>
 ${radioOptions}
                 </RadioGroup>`;
-        break;
-      case 'switch':
-        fieldComponent = `<div className="flex items-center space-x-2">
+          break;
+        case "switch":
+          fieldComponent = `<div className="flex items-center space-x-2">
                   <Switch checked={field.value} onCheckedChange={field.onChange} />
                   <Label>${field.label}</Label>
                 </div>`;
-        break;
-    }
+          break;
+      }
 
-    const showLabel = field.type !== 'checkbox' && field.type !== 'switch';
+      const showLabel = field.type !== "checkbox" && field.type !== "switch";
 
-    return `        <FormField
+      return `        <FormField
           control={form.control}
           name="${field.id}"
           render={({ field }) => (
             <FormItem>
-              ${showLabel ? `<FormLabel>${field.label}</FormLabel>` : ''}
+              ${showLabel ? `<FormLabel>${field.label}</FormLabel>` : ""}
               <FormControl>
                 ${fieldComponent}
               </FormControl>
@@ -143,10 +166,11 @@ ${radioOptions}
             </FormItem>
           )}
         />`;
-  }).join('\n');
+    })
+    .join("\n");
 
   const component = `
-export function ${formConfig.name.replace(/\s+/g, '')}Form() {
+export function ${formConfig.name.replace(/\s+/g, "")}Form() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
