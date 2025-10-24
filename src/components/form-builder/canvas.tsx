@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { useFormStore } from "@/store/form-store";
 import {
   SortableContext,
@@ -54,8 +55,7 @@ export function Canvas() {
       // Only start panning if clicking on the canvas background, not on form elements
       const target = e.target as HTMLElement;
       const isCanvasBackground =
-        target === canvasRef.current ||
-        target.classList.contains("canvas-background");
+        target === canvasRef.current || target.classList.contains("");
 
       if (isCanvasBackground && e.button === 0) {
         // Only left mouse button
@@ -97,12 +97,8 @@ export function Canvas() {
     e.preventDefault();
   }, []);
 
-  const dotSize = 2;
-  const dotSpacing = 20;
-  const scaledSpacing = dotSpacing * (zoom / 100);
-
   return (
-    <div className="w-full h-full flex flex-col relative dark:bg-transparent bg-muted-foreground">
+    <div className="w-full h-full flex flex-col relative bg-background">
       {/* Zoom Controls - Bottom Right */}
       <div className="absolute bottom-4 right-4 z-10">
         <div className="flex items-center gap-2 bg-card border rounded-lg p-2 shadow-sm">
@@ -143,14 +139,14 @@ export function Canvas() {
       {/* Canvas Area with Dotted Background */}
       <div
         ref={canvasRef}
-        className="flex-1 overflow-hidden relative bg-muted"
+        className={cn(
+          "absolute inset-0",
+          "bg-size-[20px_20px]",
+          "bg-[radial-gradient(#d4d4d4_1px,transparent_1px)]",
+          "dark:bg-[radial-gradient(#404040_1px,transparent_1px)]",
+        )}
         style={{
           cursor: isDragging ? "grabbing" : "default",
-          backgroundImage: `radial-gradient(circle, rgba(255, 255, 255, 0.15) ${dotSize}px, transparent ${dotSize}px)`,
-          backgroundSize: `${scaledSpacing}px ${scaledSpacing}px`,
-          backgroundPosition: `${canvasOffset.x % scaledSpacing}px ${
-            canvasOffset.y % scaledSpacing
-          }px`,
         }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
