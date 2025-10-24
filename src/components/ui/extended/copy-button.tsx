@@ -48,7 +48,7 @@ export function CopyButton({ value }: CopyButtonProps) {
       variant={"outline"}
       aria-label={copied ? "Code copied" : "Copy code"}
       title={copied ? "Copied" : "Copy code"}
-      className="h-7 w-7 !rounded"
+      className="h-7 w-7 rounded!"
     >
       {copied ? (
         <Check className="h-4 w-4" aria-hidden />
