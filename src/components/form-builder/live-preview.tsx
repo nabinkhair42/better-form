@@ -131,11 +131,15 @@ export function LivePreview() {
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: formConfig.fields.reduce((acc, field) => {
-      acc[field.id] =
-        field.defaultValue ||
-        (field.type === "checkbox" || field.type === "switch" ? false : "");
+      if (field.type === "checkbox" || field.type === "switch") {
+        acc[field.id] = (field.defaultValue as boolean) ?? false;
+      } else if (field.type === "input" && field.inputType === "number") {
+        acc[field.id] = (field.defaultValue as number) ?? undefined;
+      } else {
+        acc[field.id] = (field.defaultValue as string) ?? "";
+      }
       return acc;
-    }, {} as Record<string, string | boolean>),
+    }, {} as Record<string, string | boolean | number | undefined>),
   });
 
   const onSubmit = (values: FormValues) => {

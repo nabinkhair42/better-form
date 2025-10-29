@@ -29,7 +29,7 @@ export function FieldRenderer({ field }: FieldRendererProps) {
           <Input
             type={field.inputType || "text"}
             placeholder={field.placeholder || "Enter text..."}
-            defaultValue={field.defaultValue}
+            defaultValue={field.defaultValue as string | undefined}
             disabled
           />
         );
@@ -38,7 +38,7 @@ export function FieldRenderer({ field }: FieldRendererProps) {
         return (
           <Textarea
             placeholder={field.placeholder || "Enter text..."}
-            defaultValue={field.defaultValue}
+            defaultValue={field.defaultValue as string | undefined}
             disabled
           />
         );
@@ -67,7 +67,7 @@ export function FieldRenderer({ field }: FieldRendererProps) {
             <Checkbox
               id={field.id}
               disabled
-              defaultChecked={field.defaultValue}
+              defaultChecked={field.defaultValue as boolean | undefined}
             />
             <Label htmlFor={field.id}>{field.label}</Label>
           </div>
@@ -75,7 +75,7 @@ export function FieldRenderer({ field }: FieldRendererProps) {
 
       case "radio":
         return (
-          <RadioGroup disabled defaultValue={field.defaultValue}>
+          <RadioGroup disabled defaultValue={field.defaultValue as string | undefined}>
             {field.options?.map((option) => (
               <div key={option.value} className="flex items-center space-x-2">
                 <RadioGroupItem
@@ -96,7 +96,7 @@ export function FieldRenderer({ field }: FieldRendererProps) {
             <Switch
               id={field.id}
               disabled
-              defaultChecked={field.defaultValue}
+              defaultChecked={field.defaultValue as boolean | undefined}
             />
             <Label htmlFor={field.id}>{field.label}</Label>
           </div>
@@ -107,8 +107,8 @@ export function FieldRenderer({ field }: FieldRendererProps) {
           <div className="flex">
             <PhoneInput
               disabled
-              value={field.defaultValue || ""}
-              onChange={() => {}}
+              value={(field.defaultValue as string) || ""}
+              onChange={() => { }}
             />
           </div>
         );
@@ -116,7 +116,7 @@ export function FieldRenderer({ field }: FieldRendererProps) {
       case "country":
         return (
           <div className="flex">
-            <CountryDropdown disabled defaultValue={field.defaultValue} />
+            <CountryDropdown disabled defaultValue={field.defaultValue as string | undefined} />
           </div>
         );
 
