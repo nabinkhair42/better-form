@@ -1,8 +1,10 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
+import { CountryDropdown } from "@/components/ui/country-dropdown";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
@@ -97,6 +99,24 @@ export function FieldRenderer({ field }: FieldRendererProps) {
               defaultChecked={field.defaultValue}
             />
             <Label htmlFor={field.id}>{field.label}</Label>
+          </div>
+        );
+
+      case "phone":
+        return (
+          <div className="flex">
+            <PhoneInput
+              disabled
+              value={field.defaultValue || ""}
+              onChange={() => {}}
+            />
+          </div>
+        );
+
+      case "country":
+        return (
+          <div className="flex">
+            <CountryDropdown disabled defaultValue={field.defaultValue} />
           </div>
         );
 

@@ -1,4 +1,5 @@
-import { FormBuilder } from '@/components/form-builder/form-builder';
+"use client";
+import { FormBuilder } from "@/components/form-builder";
 
 export default function Home() {
   return (

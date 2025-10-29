@@ -2,15 +2,22 @@
 
 import { Button } from "@/components/ui/button";
 import { CodeBlockClient } from "@/components/ui/extended/code-block-client";
-import { generateReactComponent, generateZodSchema } from "@/lib/code-generator";
+import {
+  generateReactComponent,
+  generateZodSchema,
+} from "@/lib/code-generator";
+import { collectDependencies } from "@/lib/dependencies";
 import { useFormStore } from "@/store/form-store";
 import { useState } from "react";
 export function CodeExport() {
   const { formConfig } = useFormStore();
-  const [activeTab, setActiveTab] = useState<"schema" | "component">("schema");
+  const [activeTab, setActiveTab] = useState<"schema" | "component" | "deps">(
+    "schema",
+  );
 
   const zodSchema = generateZodSchema(formConfig);
   const reactComponent = generateReactComponent(formConfig);
+  const deps = collectDependencies(formConfig);
 
   if (formConfig.fields.length === 0) {
     return (
@@ -39,6 +46,14 @@ export function CodeExport() {
         >
           React Component
         </Button>
+        <Button
+          variant={activeTab === "deps" ? "default" : "ghost"}
+          size="sm"
+          onClick={() => setActiveTab("deps")}
+          className="h-8"
+        >
+          Dependencies
+        </Button>
       </div>
 
       {activeTab === "schema" && (
@@ -58,6 +73,29 @@ export function CodeExport() {
             language="tsx"
             meta='title="form-component.tsx"'
           />
+        </div>
+      )}
+
+      {activeTab === "deps" && (
+        <div className="space-y-4">
+          <div>
+            <p className="text-sm font-medium mb-2">shadcn/ui components</p>
+            <ul className="list-disc pl-5 text-sm text-muted-foreground">
+              {deps.shadcn.map((c) => (
+                <li key={c}>{c}</li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="text-sm font-medium mb-2">npm packages</p>
+            <ul className="list-disc pl-5 text-sm text-muted-foreground">
+              {deps.packages.map((p) => (
+                <li key={p.name}>
+                  <span className="font-semibold">{p.name}</span> – {p.reason}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
     </div>

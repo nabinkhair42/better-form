@@ -1,81 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { generateFieldId } from "@/lib/field-utils";
 import { useFormStore } from "@/store/form-store";
-import { FormFieldType } from "@/types/form";
-import {
-  CheckSquare,
-  Circle,
-  FileText,
-  List,
-  Plus,
-  ToggleLeft,
-  Type,
-} from "lucide-react";
-
-const fieldTypes = [
-  {
-    id: "input",
-    type: "input" as FormFieldType,
-    label: "Text Input",
-    description: "Single line text input",
-  },
-  {
-    id: "textarea",
-    type: "textarea" as FormFieldType,
-    label: "Textarea",
-    description: "Multi-line text input",
-  },
-  {
-    id: "select",
-    type: "select" as FormFieldType,
-    label: "Select",
-    description: "Dropdown selection",
-  },
-  {
-    id: "checkbox",
-    type: "checkbox" as FormFieldType,
-    label: "Checkbox",
-    description: "Single checkbox",
-  },
-  {
-    id: "radio",
-    type: "radio" as FormFieldType,
-    label: "Radio Group",
-    description: "Multiple choice selection",
-  },
-  {
-    id: "switch",
-    type: "switch" as FormFieldType,
-    label: "Switch",
-    description: "Toggle switch",
-  },
-];
-
-const getFieldIcon = (type: FormFieldType) => {
-  switch (type) {
-    case "input":
-      return Type;
-    case "textarea":
-      return FileText;
-    case "select":
-      return List;
-    case "checkbox":
-      return CheckSquare;
-    case "radio":
-      return Circle;
-    case "switch":
-      return ToggleLeft;
-    default:
-      return Type;
-  }
-};
+import { FieldItem } from "./sidebar/FieldItem";
+import { fieldTypes } from "./sidebar/field-types";
 
 export function Sidebar() {
   const { addField, formConfig } = useFormStore();
 
-  const handleAddField = (fieldType: (typeof fieldTypes)[0]) => {
+  const handleAddField = (fieldType: (typeof fieldTypes)[number]) => {
     const existingIds = formConfig.fields.map((f) => f.id);
     const fieldId = generateFieldId(fieldType.label, existingIds);
 
@@ -122,35 +55,13 @@ export function Sidebar() {
         </header>
 
         <div className="flex flex-col gap-4 px-3">
-          {fieldTypes.map((fieldType) => {
-            const Icon = getFieldIcon(fieldType.type);
-            return (
-              <div
-                key={fieldType.id}
-                className="flex items-center justify-between"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <div className="text-sm font-medium truncate">
-                      {fieldType.label}
-                    </div>
-                    <div className="text-xs text-muted-foreground truncate">
-                      {fieldType.description}
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleAddField(fieldType)}
-                  className="h-7 w-7"
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            );
-          })}
+          {fieldTypes.map((fieldType) => (
+            <FieldItem
+              key={fieldType.id}
+              item={fieldType}
+              onAdd={handleAddField}
+            />
+          ))}
         </div>
       </div>
     </div>

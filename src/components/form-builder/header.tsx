@@ -1,5 +1,6 @@
 "use client";
 
+import { AppIcon } from "@/components/ui/app-icon";
 import { Button } from "@/components/ui/button";
 import { useFormStore } from "@/store/form-store";
 import { Menu, X } from "lucide-react";
@@ -39,6 +40,7 @@ export function Header({
               <Menu className="h-4 w-4" />
             )}
           </Button>
+          <AppIcon size={20} aria-hidden className="shrink-0" />
           <h1 className="text-xl font-semibold text-foreground">Better Form</h1>
         </div>
 

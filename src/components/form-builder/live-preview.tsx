@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { CountryDropdown } from "@/components/ui/country-dropdown";
 import {
   Form,
   FormControl,
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
@@ -40,6 +42,39 @@ export function LivePreview() {
 
       switch (field.type) {
         case "input":
+          if (field.inputType === "email") {
+            fieldSchema = z.string().email();
+          } else if (field.inputType === "url") {
+            fieldSchema = z.string().url();
+          } else if (field.inputType === "number") {
+            fieldSchema = z.coerce.number();
+            if (field.validation?.number?.min !== undefined) {
+              fieldSchema = (fieldSchema as z.ZodNumber).min(
+                field.validation.number.min,
+              );
+            }
+            if (field.validation?.number?.max !== undefined) {
+              fieldSchema = (fieldSchema as z.ZodNumber).max(
+                field.validation.number.max,
+              );
+            }
+            if (field.validation?.number?.integer) {
+              fieldSchema = (fieldSchema as z.ZodNumber).int();
+            }
+          } else {
+            fieldSchema = z.string();
+            if (field.validation?.min) {
+              fieldSchema = (fieldSchema as z.ZodString).min(
+                field.validation.min,
+              );
+            }
+            if (field.validation?.max) {
+              fieldSchema = (fieldSchema as z.ZodString).max(
+                field.validation.max,
+              );
+            }
+          }
+          break;
         case "textarea":
           fieldSchema = z.string();
           if (field.validation?.min) {
@@ -60,6 +95,14 @@ export function LivePreview() {
         case "checkbox":
         case "switch":
           fieldSchema = z.boolean();
+          break;
+        case "phone":
+          fieldSchema = z
+            .string()
+            .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number");
+          break;
+        case "country":
+          fieldSchema = z.string().min(1, "Please select a country");
           break;
         default:
           fieldSchema = z.string();
@@ -217,6 +260,22 @@ export function LivePreview() {
                               />
                               <Label>{field.label}</Label>
                             </div>
+                          );
+                        case "phone":
+                          return (
+                            <PhoneInput
+                              value={formField.value as string}
+                              onChange={formField.onChange}
+                            />
+                          );
+                        case "country":
+                          return (
+                            <CountryDropdown
+                              defaultValue={formField.value as string}
+                              onChange={(country) =>
+                                formField.onChange(country.alpha3)
+                              }
+                            />
                           );
                         default:
                           return <div>Unknown field type</div>;
