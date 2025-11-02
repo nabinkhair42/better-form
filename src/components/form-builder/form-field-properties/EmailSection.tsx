@@ -9,27 +9,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FormField } from "@/types/form";
+import { FieldPropertySectionProps } from "./types";
 
-type Props = {
-  selectedField: FormField;
-  onUpdate: (updates: Partial<FormField>) => void;
-};
+type Props = FieldPropertySectionProps;
 
-export function EmailSection({ selectedField, onUpdate }: Props) {
-  if (!(selectedField.type === "input" && selectedField.inputType === "email")) {
+export function EmailSection({ field, onUpdate }: Props) {
+  if (!(field.type === "input" && field.inputType === "email")) {
     return null;
   }
   return (
     <div className="space-y-2">
       <Label htmlFor="email-preset">Email Validation</Label>
       <Select
-        value={selectedField.validation?.email?.preset || "standard"}
+        value={field.validation?.email?.preset || "standard"}
         onValueChange={(preset: "standard" | "rfc5322" | "custom") =>
           onUpdate({
             validation: {
-              ...selectedField.validation,
-              email: { ...selectedField.validation?.email, preset },
+              ...field.validation,
+              email: { ...field.validation?.email, preset },
             },
           })
         }
@@ -44,17 +41,17 @@ export function EmailSection({ selectedField, onUpdate }: Props) {
         </SelectContent>
       </Select>
 
-      {selectedField.validation?.email?.preset === "custom" && (
+      {field.validation?.email?.preset === "custom" && (
         <div className="space-y-2">
           <Input
             placeholder="Custom regex pattern"
-            value={selectedField.validation?.email?.pattern || ""}
+            value={field.validation?.email?.pattern || ""}
             onChange={(e) =>
               onUpdate({
                 validation: {
-                  ...selectedField.validation,
+                  ...field.validation,
                   email: {
-                    ...selectedField.validation?.email,
+                    ...field.validation?.email,
                     pattern: e.target.value,
                   },
                 },
@@ -63,13 +60,13 @@ export function EmailSection({ selectedField, onUpdate }: Props) {
           />
           <Input
             placeholder="Error message (optional)"
-            value={selectedField.validation?.email?.message || ""}
+            value={field.validation?.email?.message || ""}
             onChange={(e) =>
               onUpdate({
                 validation: {
-                  ...selectedField.validation,
+                  ...field.validation,
                   email: {
-                    ...selectedField.validation?.email,
+                    ...field.validation?.email,
                     message: e.target.value,
                   },
                 },
@@ -81,5 +78,3 @@ export function EmailSection({ selectedField, onUpdate }: Props) {
     </div>
   );
 }
-
-

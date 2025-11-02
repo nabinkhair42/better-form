@@ -1,21 +1,21 @@
 "use client";
 
-import { CodeExport } from "./code-export";
+import { LivePreview } from "./live-preview";
 
-export function CodeContent() {
+export function PreviewContent() {
   return (
     <div className="flex-1 bg-sidebar overflow-hidden">
       <div className="h-full flex flex-col">
         <div className="space-y-2 border-b p-4 h-[93px] shrink-0">
           <h2 className="text-2xl font-semibold text-foreground mb-2">
-            Export Code
+            Live Preview
           </h2>
           <p className="text-sm text-muted-foreground">
-            Copy the generated code to use in your project
+            This is how your form will look and behave
           </p>
         </div>
-        <div className="flex-1 overflow-y-auto max-w-5xl">
-          <CodeExport />
+        <div className="flex-1 overflow-y-auto max-w-xl mx-left rounded-lg">
+          <LivePreview />
         </div>
       </div>
     </div>

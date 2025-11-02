@@ -1,5 +1,11 @@
 "use client";
 
+import { BuilderContent } from "@/components/form-builder/builder-content";
+import { CodeContent } from "@/components/form-builder/code-export/code-content";
+import { PreviewContent } from "@/components/form-builder/form-preview/preview-content";
+import { Header } from "@/components/form-builder/layout/header";
+import { Sidebar } from "@/components/form-builder/layout/sidebar";
+import { PropertiesPanel } from "@/components/form-builder/properties-panel";
 import { useFormStore } from "@/store/form-store";
 import {
   DndContext,
@@ -9,12 +15,6 @@ import {
   closestCenter,
 } from "@dnd-kit/core";
 import { useState } from "react";
-import { BuilderContent } from "./builder-content";
-import { CodeContent } from "./code-content";
-import { Header } from "./header";
-import { PreviewContent } from "./preview-content";
-import { PropertiesPanel } from "./properties-panel";
-import { Sidebar } from "./sidebar";
 
 export function FormBuilder() {
   const [activeTab, setActiveTab] = useState<"builder" | "preview" | "code">(

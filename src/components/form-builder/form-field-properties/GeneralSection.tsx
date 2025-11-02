@@ -11,36 +11,31 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { INPUT_TYPE_CATALOG } from "@/lib/fields-catalog";
-import { FormField, InputType } from "@/types/form";
+import { InputType } from "@/types/form";
+import { FieldPropertySectionProps } from "./types";
 
-type Props = {
-  selectedField: FormField;
+type Props = FieldPropertySectionProps & {
   onLabelChange: (newLabel: string) => void;
-  onUpdate: (updates: Partial<FormField>) => void;
 };
 
-export function GeneralSection({
-  selectedField,
-  onLabelChange,
-  onUpdate,
-}: Props) {
+export function GeneralSection({ field, onLabelChange, onUpdate }: Props) {
   return (
     <>
       <div className="space-y-2">
         <Label htmlFor="field-label">Label</Label>
         <Input
           id="field-label"
-          value={selectedField.label}
+          value={field.label}
           onChange={(e) => onLabelChange(e.target.value)}
           placeholder="Field label"
         />
       </div>
 
-      {selectedField.type === "input" && (
+      {field.type === "input" && (
         <div className="space-y-2">
           <Label htmlFor="input-type">Input Type</Label>
           <Select
-            value={selectedField.inputType || "text"}
+            value={field.inputType || "text"}
             onValueChange={(value: InputType) => onUpdate({ inputType: value })}
           >
             <SelectTrigger className="w-full">
@@ -60,14 +55,14 @@ export function GeneralSection({
         </div>
       )}
 
-      {(selectedField.type === "input" ||
-        selectedField.type === "textarea" ||
-        selectedField.type === "select") && (
+      {(field.type === "input" ||
+        field.type === "textarea" ||
+        field.type === "select") && (
         <div className="space-y-2">
           <Label htmlFor="field-placeholder">Placeholder</Label>
           <Input
             id="field-placeholder"
-            value={selectedField.placeholder || ""}
+            value={field.placeholder || ""}
             onChange={(e) => onUpdate({ placeholder: e.target.value })}
             placeholder="Placeholder text"
           />
@@ -76,17 +71,17 @@ export function GeneralSection({
 
       <div className="space-y-2">
         <Label htmlFor="field-default">Default Value</Label>
-        {selectedField.type === "textarea" ? (
+        {field.type === "textarea" ? (
           <Textarea
             id="field-default"
-            value={String(selectedField.defaultValue ?? "")}
+            value={String(field.defaultValue ?? "")}
             onChange={(e) => onUpdate({ defaultValue: e.target.value })}
             placeholder="Default value"
           />
         ) : (
           <Input
             id="field-default"
-            value={String(selectedField.defaultValue ?? "")}
+            value={String(field.defaultValue ?? "")}
             onChange={(e) => onUpdate({ defaultValue: e.target.value })}
             placeholder="Default value"
           />

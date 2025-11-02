@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Canvas } from './canvas';
+import { Canvas } from "./canvas/canvas";
 
 export function BuilderContent() {
   return (

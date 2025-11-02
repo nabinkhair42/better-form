@@ -3,14 +3,13 @@
 // Panel container imports only
 import { generateFieldId } from "@/lib/field-utils";
 import { useFormStore } from "@/store/form-store";
-import { FormField } from "@/types/form";
-import { EmailSection } from "./properties/EmailSection";
-import { GeneralSection } from "./properties/GeneralSection";
-import { NumberSection } from "./properties/NumberSection";
-import { OptionsSection } from "./properties/OptionsSection";
-import { PasswordSection } from "./properties/PasswordSection";
-import { UrlSection } from "./properties/UrlSection";
-import { ValidationBasicsSection } from "./properties/ValidationBasicsSection";
+import { EmailSection } from "./form-field-properties/EmailSection";
+import { GeneralSection } from "./form-field-properties/GeneralSection";
+import { NumberSection } from "./form-field-properties/NumberSection";
+import { OptionsSection } from "./form-field-properties/OptionsSection";
+import { PasswordSection } from "./form-field-properties/PasswordSection";
+import { UrlSection } from "./form-field-properties/UrlSection";
+import { ValidationBasicsSection } from "./form-field-properties/ValidationBasicsSection";
 
 export function PropertiesPanel() {
   const { formConfig, selectedFieldId, updateField } = useFormStore();
@@ -63,38 +62,23 @@ export function PropertiesPanel() {
 
       <div className="space-y-4 p-3">
         <GeneralSection
-          selectedField={selectedField as FormField}
+          field={selectedField}
           onLabelChange={handleLabelChange}
           onUpdate={handleFieldUpdate}
         />
 
-        <EmailSection
-          selectedField={selectedField as FormField}
-          onUpdate={handleFieldUpdate}
-        />
-        <PasswordSection
-          selectedField={selectedField as FormField}
-          onUpdate={handleFieldUpdate}
-        />
-        <NumberSection
-          selectedField={selectedField as FormField}
-          onUpdate={handleFieldUpdate}
-        />
-        <UrlSection
-          selectedField={selectedField as FormField}
-          onUpdate={handleFieldUpdate}
-        />
+        <EmailSection field={selectedField} onUpdate={handleFieldUpdate} />
+        <PasswordSection field={selectedField} onUpdate={handleFieldUpdate} />
+        <NumberSection field={selectedField} onUpdate={handleFieldUpdate} />
+        <UrlSection field={selectedField} onUpdate={handleFieldUpdate} />
 
         {/* Options for Select and Radio */}
         {needsOptions && (
-          <OptionsSection
-            selectedField={selectedField as FormField}
-            onUpdate={handleFieldUpdate}
-          />
+          <OptionsSection field={selectedField} onUpdate={handleFieldUpdate} />
         )}
 
         <ValidationBasicsSection
-          selectedField={selectedField as FormField}
+          field={selectedField}
           onUpdate={handleFieldUpdate}
         />
       </div>

@@ -9,27 +9,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FormField } from "@/types/form";
+import { FieldPropertySectionProps } from "./types";
 
-type Props = {
-  selectedField: FormField;
-  onUpdate: (updates: Partial<FormField>) => void;
-};
+type Props = FieldPropertySectionProps;
 
-export function UrlSection({ selectedField, onUpdate }: Props) {
-  if (!(selectedField.type === "input" && selectedField.inputType === "url")) {
+export function UrlSection({ field, onUpdate }: Props) {
+  if (!(field.type === "input" && field.inputType === "url")) {
     return null;
   }
   return (
     <div className="space-y-2">
       <Label>URL Validation</Label>
       <Select
-        value={selectedField.validation?.url?.preset || "standard"}
+        value={field.validation?.url?.preset || "standard"}
         onValueChange={(preset: "standard" | "custom") =>
           onUpdate({
             validation: {
-              ...selectedField.validation,
-              url: { ...selectedField.validation?.url, preset },
+              ...field.validation,
+              url: { ...field.validation?.url, preset },
             },
           })
         }
@@ -42,28 +39,28 @@ export function UrlSection({ selectedField, onUpdate }: Props) {
           <SelectItem value="custom">Custom regex</SelectItem>
         </SelectContent>
       </Select>
-      {selectedField.validation?.url?.preset === "custom" && (
+      {field.validation?.url?.preset === "custom" && (
         <div className="space-y-2">
           <Input
             placeholder="Custom regex pattern"
-            value={selectedField.validation?.url?.pattern || ""}
+            value={field.validation?.url?.pattern || ""}
             onChange={(e) =>
               onUpdate({
                 validation: {
-                  ...selectedField.validation,
-                  url: { ...selectedField.validation?.url, pattern: e.target.value },
+                  ...field.validation,
+                  url: { ...field.validation?.url, pattern: e.target.value },
                 },
               })
             }
           />
           <Input
             placeholder="Error message (optional)"
-            value={selectedField.validation?.url?.message || ""}
+            value={field.validation?.url?.message || ""}
             onChange={(e) =>
               onUpdate({
                 validation: {
-                  ...selectedField.validation,
-                  url: { ...selectedField.validation?.url, message: e.target.value },
+                  ...field.validation,
+                  url: { ...field.validation?.url, message: e.target.value },
                 },
               })
             }
@@ -73,5 +70,3 @@ export function UrlSection({ selectedField, onUpdate }: Props) {
     </div>
   );
 }
-
-

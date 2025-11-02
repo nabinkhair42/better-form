@@ -1,9 +1,9 @@
 "use client";
 
+import { fieldTypes } from "@/components/form-builder/form-fields/field-types";
+import { FieldItem } from "@/components/form-builder/form-fields/FieldItem";
 import { generateFieldId } from "@/lib/field-utils";
 import { useFormStore } from "@/store/form-store";
-import { FieldItem } from "./sidebar/FieldItem";
-import { fieldTypes } from "./sidebar/field-types";
 
 export function Sidebar() {
   const { addField, formConfig } = useFormStore();

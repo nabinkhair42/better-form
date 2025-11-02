@@ -3,15 +3,12 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { FormField } from "@/types/form";
+import { FieldPropertySectionProps } from "./types";
 
-type Props = {
-  selectedField: FormField;
-  onUpdate: (updates: Partial<FormField>) => void;
-};
+type Props = FieldPropertySectionProps;
 
-export function NumberSection({ selectedField, onUpdate }: Props) {
-  if (!(selectedField.type === "input" && selectedField.inputType === "number")) {
+export function NumberSection({ field, onUpdate }: Props) {
+  if (!(field.type === "input" && field.inputType === "number")) {
     return null;
   }
   return (
@@ -23,14 +20,17 @@ export function NumberSection({ selectedField, onUpdate }: Props) {
           <Input
             id="num-min"
             type="number"
-            value={selectedField.validation?.number?.min ?? ""}
+            value={field.validation?.number?.min ?? ""}
             onChange={(e) =>
               onUpdate({
                 validation: {
-                  ...selectedField.validation,
+                  ...field.validation,
                   number: {
-                    ...selectedField.validation?.number,
-                    min: e.target.value === "" ? undefined : Number(e.target.value),
+                    ...field.validation?.number,
+                    min:
+                      e.target.value === ""
+                        ? undefined
+                        : Number(e.target.value),
                   },
                 },
               })
@@ -42,14 +42,17 @@ export function NumberSection({ selectedField, onUpdate }: Props) {
           <Input
             id="num-max"
             type="number"
-            value={selectedField.validation?.number?.max ?? ""}
+            value={field.validation?.number?.max ?? ""}
             onChange={(e) =>
               onUpdate({
                 validation: {
-                  ...selectedField.validation,
+                  ...field.validation,
                   number: {
-                    ...selectedField.validation?.number,
-                    max: e.target.value === "" ? undefined : Number(e.target.value),
+                    ...field.validation?.number,
+                    max:
+                      e.target.value === ""
+                        ? undefined
+                        : Number(e.target.value),
                   },
                 },
               })
@@ -60,23 +63,23 @@ export function NumberSection({ selectedField, onUpdate }: Props) {
       <div className="flex items-center gap-2">
         <Switch
           id="num-int"
-          checked={selectedField.validation?.number?.integer || false}
+          checked={field.validation?.number?.integer || false}
           onCheckedChange={(checked) =>
             onUpdate({
               validation: {
-                ...selectedField.validation,
+                ...field.validation,
                 number: {
-                  ...selectedField.validation?.number,
+                  ...field.validation?.number,
                   integer: checked || undefined,
                 },
               },
             })
           }
         />
-        <Label htmlFor="num-int" className="text-sm">Integer only</Label>
+        <Label htmlFor="num-int" className="text-sm">
+          Integer only
+        </Label>
       </div>
     </div>
   );
 }
-
-

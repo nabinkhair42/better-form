@@ -10,27 +10,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { FormField } from "@/types/form";
+import { FieldPropertySectionProps } from "./types";
 
-type Props = {
-  selectedField: FormField;
-  onUpdate: (updates: Partial<FormField>) => void;
-};
+type Props = FieldPropertySectionProps;
 
-export function PasswordSection({ selectedField, onUpdate }: Props) {
-  if (!(selectedField.type === "input" && selectedField.inputType === "password")) {
+export function PasswordSection({ field, onUpdate }: Props) {
+  if (!(field.type === "input" && field.inputType === "password")) {
     return null;
   }
   return (
     <div className="space-y-2">
       <Label htmlFor="password-preset">Password Policy</Label>
       <Select
-        value={selectedField.validation?.password?.preset || "medium"}
+        value={field.validation?.password?.preset || "medium"}
         onValueChange={(preset: "weak" | "medium" | "strong" | "custom") =>
           onUpdate({
             validation: {
-              ...selectedField.validation,
-              password: { ...selectedField.validation?.password, preset },
+              ...field.validation,
+              password: { ...field.validation?.password, preset },
             },
           })
         }
@@ -41,7 +38,9 @@ export function PasswordSection({ selectedField, onUpdate }: Props) {
         <SelectContent>
           <SelectItem value="weak">Weak (length only)</SelectItem>
           <SelectItem value="medium">Medium (lowercase + number)</SelectItem>
-          <SelectItem value="strong">Strong (upper + lower + number + special)</SelectItem>
+          <SelectItem value="strong">
+            Strong (upper + lower + number + special)
+          </SelectItem>
           <SelectItem value="custom">Custom</SelectItem>
         </SelectContent>
       </Select>
@@ -52,14 +51,16 @@ export function PasswordSection({ selectedField, onUpdate }: Props) {
           <Input
             id="pwd-min"
             type="number"
-            value={selectedField.validation?.password?.minLength || ""}
+            value={field.validation?.password?.minLength || ""}
             onChange={(e) =>
               onUpdate({
                 validation: {
-                  ...selectedField.validation,
+                  ...field.validation,
                   password: {
-                    ...selectedField.validation?.password,
-                    minLength: e.target.value ? parseInt(e.target.value) : undefined,
+                    ...field.validation?.password,
+                    minLength: e.target.value
+                      ? parseInt(e.target.value)
+                      : undefined,
                   },
                 },
               })
@@ -73,90 +74,98 @@ export function PasswordSection({ selectedField, onUpdate }: Props) {
             <div className="flex items-center gap-2">
               <Switch
                 id="pwd-upper"
-                checked={selectedField.validation?.password?.requireUppercase || false}
+                checked={field.validation?.password?.requireUppercase || false}
                 onCheckedChange={(checked) =>
                   onUpdate({
                     validation: {
-                      ...selectedField.validation,
+                      ...field.validation,
                       password: {
-                        ...selectedField.validation?.password,
+                        ...field.validation?.password,
                         requireUppercase: checked || undefined,
                       },
                     },
                   })
                 }
               />
-              <Label htmlFor="pwd-upper" className="text-sm">Uppercase</Label>
+              <Label htmlFor="pwd-upper" className="text-sm">
+                Uppercase
+              </Label>
             </div>
             <div className="flex items-center gap-2">
               <Switch
                 id="pwd-lower"
-                checked={selectedField.validation?.password?.requireLowercase || false}
+                checked={field.validation?.password?.requireLowercase || false}
                 onCheckedChange={(checked) =>
                   onUpdate({
                     validation: {
-                      ...selectedField.validation,
+                      ...field.validation,
                       password: {
-                        ...selectedField.validation?.password,
+                        ...field.validation?.password,
                         requireLowercase: checked || undefined,
                       },
                     },
                   })
                 }
               />
-              <Label htmlFor="pwd-lower" className="text-sm">Lowercase</Label>
+              <Label htmlFor="pwd-lower" className="text-sm">
+                Lowercase
+              </Label>
             </div>
             <div className="flex items-center gap-2">
               <Switch
                 id="pwd-number"
-                checked={selectedField.validation?.password?.requireNumber || false}
+                checked={field.validation?.password?.requireNumber || false}
                 onCheckedChange={(checked) =>
                   onUpdate({
                     validation: {
-                      ...selectedField.validation,
+                      ...field.validation,
                       password: {
-                        ...selectedField.validation?.password,
+                        ...field.validation?.password,
                         requireNumber: checked || undefined,
                       },
                     },
                   })
                 }
               />
-              <Label htmlFor="pwd-number" className="text-sm">Number</Label>
+              <Label htmlFor="pwd-number" className="text-sm">
+                Number
+              </Label>
             </div>
             <div className="flex items-center gap-2">
               <Switch
                 id="pwd-special"
-                checked={selectedField.validation?.password?.requireSpecial || false}
+                checked={field.validation?.password?.requireSpecial || false}
                 onCheckedChange={(checked) =>
                   onUpdate({
                     validation: {
-                      ...selectedField.validation,
+                      ...field.validation,
                       password: {
-                        ...selectedField.validation?.password,
+                        ...field.validation?.password,
                         requireSpecial: checked || undefined,
                       },
                     },
                   })
                 }
               />
-              <Label htmlFor="pwd-special" className="text-sm">Special</Label>
+              <Label htmlFor="pwd-special" className="text-sm">
+                Special
+              </Label>
             </div>
           </div>
         </div>
       </div>
 
-      {selectedField.validation?.password?.preset === "custom" && (
+      {field.validation?.password?.preset === "custom" && (
         <div className="space-y-2">
           <Input
             placeholder="Custom regex pattern"
-            value={selectedField.validation?.password?.pattern || ""}
+            value={field.validation?.password?.pattern || ""}
             onChange={(e) =>
               onUpdate({
                 validation: {
-                  ...selectedField.validation,
+                  ...field.validation,
                   password: {
-                    ...selectedField.validation?.password,
+                    ...field.validation?.password,
                     pattern: e.target.value,
                   },
                 },
@@ -165,13 +174,13 @@ export function PasswordSection({ selectedField, onUpdate }: Props) {
           />
           <Input
             placeholder="Error message (optional)"
-            value={selectedField.validation?.password?.message || ""}
+            value={field.validation?.password?.message || ""}
             onChange={(e) =>
               onUpdate({
                 validation: {
-                  ...selectedField.validation,
+                  ...field.validation,
                   password: {
-                    ...selectedField.validation?.password,
+                    ...field.validation?.password,
                     message: e.target.value,
                   },
                 },
@@ -183,5 +192,3 @@ export function PasswordSection({ selectedField, onUpdate }: Props) {
     </div>
   );
 }
-
-

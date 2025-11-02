@@ -3,25 +3,22 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { FormField } from "@/types/form";
+import { FieldPropertySectionProps } from "./types";
 
-type Props = {
-  selectedField: FormField;
-  onUpdate: (updates: Partial<FormField>) => void;
-};
+type Props = FieldPropertySectionProps;
 
-export function ValidationBasicsSection({ selectedField, onUpdate }: Props) {
+export function ValidationBasicsSection({ field, onUpdate }: Props) {
   return (
     <div className="space-y-3">
       <Label>Validation</Label>
       <div className="flex items-center space-x-2">
         <Switch
           id="required"
-          checked={selectedField.validation?.required || false}
+          checked={field.validation?.required || false}
           onCheckedChange={(checked) =>
             onUpdate({
               validation: {
-                ...selectedField.validation,
+                ...field.validation,
                 required: checked,
               },
             })
@@ -32,18 +29,18 @@ export function ValidationBasicsSection({ selectedField, onUpdate }: Props) {
         </Label>
       </div>
 
-      {(selectedField.type === "input" || selectedField.type === "textarea") && (
+      {(field.type === "input" || field.type === "textarea") && (
         <>
           <div className="space-y-2">
             <Label htmlFor="min-length">Min Length</Label>
             <Input
               id="min-length"
               type="number"
-              value={selectedField.validation?.min || ""}
+              value={field.validation?.min || ""}
               onChange={(e) =>
                 onUpdate({
                   validation: {
-                    ...selectedField.validation,
+                    ...field.validation,
                     min: e.target.value ? parseInt(e.target.value) : undefined,
                   },
                 })
@@ -57,11 +54,11 @@ export function ValidationBasicsSection({ selectedField, onUpdate }: Props) {
             <Input
               id="max-length"
               type="number"
-              value={selectedField.validation?.max || ""}
+              value={field.validation?.max || ""}
               onChange={(e) =>
                 onUpdate({
                   validation: {
-                    ...selectedField.validation,
+                    ...field.validation,
                     max: e.target.value ? parseInt(e.target.value) : undefined,
                   },
                 })
@@ -74,5 +71,3 @@ export function ValidationBasicsSection({ selectedField, onUpdate }: Props) {
     </div>
   );
 }
-
-
