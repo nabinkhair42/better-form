@@ -75,7 +75,10 @@ export function FieldRenderer({ field }: FieldRendererProps) {
 
       case "radio":
         return (
-          <RadioGroup disabled defaultValue={field.defaultValue as string | undefined}>
+          <RadioGroup
+            disabled
+            defaultValue={field.defaultValue as string | undefined}
+          >
             {field.options?.map((option) => (
               <div key={option.value} className="flex items-center space-x-2">
                 <RadioGroupItem
@@ -108,7 +111,8 @@ export function FieldRenderer({ field }: FieldRendererProps) {
             <PhoneInput
               disabled
               value={(field.defaultValue as string) || ""}
-              onChange={() => { }}
+              onChange={() => {}}
+              className="w-full"
             />
           </div>
         );
@@ -116,7 +120,10 @@ export function FieldRenderer({ field }: FieldRendererProps) {
       case "country":
         return (
           <div className="flex">
-            <CountryDropdown disabled defaultValue={field.defaultValue as string | undefined} />
+            <CountryDropdown
+              disabled
+              defaultValue={field.defaultValue as string | undefined}
+            />
           </div>
         );
 

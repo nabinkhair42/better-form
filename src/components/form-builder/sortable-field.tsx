@@ -37,8 +37,8 @@ export function SortableField({ field }: SortableFieldProps) {
       style={style}
       className={`
         relative group
-        ${isDragging ? "opacity-50" : "py-3 rounded"}
-        ${isSelected ? "border rounded py-3" : "hover:bg-primary/5"}
+        ${isDragging ? "opacity-50" : "py-3 rounded-xl"}
+        ${isSelected ? "border rounded-xl py-3" : "hover:bg-primary/5"}
         transition-colors
       `}
       onClick={() => setSelectedField(field.id)}
