@@ -1,5 +1,6 @@
 "use client";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { LivePreview } from "./live-preview";
 
 export function PreviewContent() {
@@ -14,9 +15,11 @@ export function PreviewContent() {
             This is how your form will look and behave
           </p>
         </div>
-        <div className="flex-1 overflow-y-auto max-w-xl mx-left rounded-lg">
-          <LivePreview />
-        </div>
+        <ScrollArea className="flex-1 h-0">
+          <div className="max-w-4xl">
+            <LivePreview />
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );

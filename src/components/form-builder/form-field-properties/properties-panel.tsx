@@ -1,15 +1,15 @@
 "use client";
 
 // Panel container imports only
+import { EmailSection } from "@/components/form-builder/form-field-properties/EmailSection";
+import { GeneralSection } from "@/components/form-builder/form-field-properties/GeneralSection";
+import { NumberSection } from "@/components/form-builder/form-field-properties/NumberSection";
+import { OptionsSection } from "@/components/form-builder/form-field-properties/OptionsSection";
+import { PasswordSection } from "@/components/form-builder/form-field-properties/PasswordSection";
+import { UrlSection } from "@/components/form-builder/form-field-properties/UrlSection";
+import { ValidationBasicsSection } from "@/components/form-builder/form-field-properties/ValidationBasicsSection";
 import { generateFieldId } from "@/lib/field-utils";
 import { useFormStore } from "@/store/form-store";
-import { EmailSection } from "./form-field-properties/EmailSection";
-import { GeneralSection } from "./form-field-properties/GeneralSection";
-import { NumberSection } from "./form-field-properties/NumberSection";
-import { OptionsSection } from "./form-field-properties/OptionsSection";
-import { PasswordSection } from "./form-field-properties/PasswordSection";
-import { UrlSection } from "./form-field-properties/UrlSection";
-import { ValidationBasicsSection } from "./form-field-properties/ValidationBasicsSection";
 
 export function PropertiesPanel() {
   const { formConfig, selectedFieldId, updateField } = useFormStore();

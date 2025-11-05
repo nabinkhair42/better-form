@@ -2,10 +2,10 @@
 
 import { BuilderContent } from "@/components/form-builder/builder-content";
 import { CodeContent } from "@/components/form-builder/code-export/code-content";
+import { PropertiesPanel } from "@/components/form-builder/form-field-properties/properties-panel";
 import { PreviewContent } from "@/components/form-builder/form-preview/preview-content";
 import { Header } from "@/components/form-builder/layout/header";
 import { Sidebar } from "@/components/form-builder/layout/sidebar";
-import { PropertiesPanel } from "@/components/form-builder/properties-panel";
 import { useFormStore } from "@/store/form-store";
 import {
   DndContext,
@@ -51,7 +51,7 @@ export function FormBuilder() {
   };
 
   return (
-    <div className="flex flex-col h-screen overflow-clip">
+    <div className="flex flex-col h-screen">
       <Header
         activeTab={activeTab}
         onTabChange={setActiveTab}
@@ -66,7 +66,7 @@ export function FormBuilder() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex flex-1 relative">
+        <div className="flex flex-1 relative overflow-hidden">
           {/* Mobile Sidebar Overlay */}
           {sidebarOpen && (
             <div

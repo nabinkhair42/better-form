@@ -1,24 +1,24 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { CodeBlockClient } from "@/components/ui/extended/code-block-client";
-import { type ReactNode, useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useState, type ReactNode } from "react";
 import { CodeExportEmptyState } from "./code-export-empty-state";
-import { DependenciesList } from "./dependencies-list";
+import { ManualTab } from "./manual-tab";
 import { useCodeExportData } from "./use-code-export-data";
 
-type CodeTabId = "schema" | "component" | "deps";
+type CodeTabId = "manual";
+// type CodeTabId = "manual" | "cli";
 
 const CODE_TABS: { id: CodeTabId; label: string }[] = [
-  { id: "schema", label: "Zod Schema" },
-  { id: "component", label: "React Component" },
-  { id: "deps", label: "Dependencies" },
+  { id: "manual", label: "Manual" },
+  // { id: "cli", label: "CLI" },
 ];
 
 export function CodeExport() {
-  const { hasFields, schema, component, dependencies } = useCodeExportData();
+  const { hasFields, filePlan, dependencyPlan } = useCodeExportData();
   const [activeTab, setActiveTab] = useState<CodeTabId>(
-    CODE_TABS[0]?.id ?? "schema",
+    CODE_TABS[0]?.id ?? "manual"
   );
 
   if (!hasFields) {
@@ -26,26 +26,13 @@ export function CodeExport() {
   }
 
   const panels: Record<CodeTabId, ReactNode> = {
-    schema: (
-      <CodeBlockClient
-        code={schema}
-        language="typescript"
-        meta='title="schema.ts"'
-      />
-    ),
-    component: (
-      <CodeBlockClient
-        code={component}
-        language="tsx"
-        meta='title="form-component.tsx"'
-      />
-    ),
-    deps: <DependenciesList summary={dependencies} />,
+    manual: <ManualTab filePlan={filePlan} dependencyPlan={dependencyPlan} />,
+    // cli: <CliTab filePlan={filePlan} dependencyPlan={dependencyPlan} />,
   };
 
   return (
-    <div className="p-4">
-      <div className="flex items-center gap-1 bg-muted p-1 rounded-lg mb-6 max-w-fit">
+    <ScrollArea className="p-4! h-screen">
+      <div className="flex items-center gap-1 mb-6">
         {CODE_TABS.map((tab) => (
           <Button
             key={tab.id}
@@ -58,8 +45,8 @@ export function CodeExport() {
           </Button>
         ))}
       </div>
-
-      <div className="space-y-4">{panels[activeTab]}</div>
-    </div>
+      {/* TODO: think of this unusual padding from buttom */}
+      <div className="space-y-4 max-w-4xl pb-40">{panels[activeTab]}</div>
+    </ScrollArea>
   );
 }

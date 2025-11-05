@@ -1,12 +1,14 @@
 "use client";
 
 import { DependencySummary } from "@/lib/dependencies";
+import type { ProjectComponentDependency } from "@/lib/dependencies";
 
 interface DependenciesListProps {
   summary: DependencySummary;
+  projectComponents?: ProjectComponentDependency[];
 }
 
-export function DependenciesList({ summary }: DependenciesListProps) {
+export function DependenciesList({ summary, projectComponents }: DependenciesListProps) {
   const { shadcn, packages } = summary;
 
   return (
@@ -39,6 +41,18 @@ export function DependenciesList({ summary }: DependenciesListProps) {
           </ul>
         )}
       </div>
+      {projectComponents && projectComponents.length > 0 && (
+        <div>
+          <p className="font-medium mb-2">project components</p>
+          <ul className="list-disc pl-5 text-muted-foreground">
+            {projectComponents.map((component) => (
+              <li key={component.name}>
+                <span className="font-semibold">{component.name}</span> – {component.reason}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

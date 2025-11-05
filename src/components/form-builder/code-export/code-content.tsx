@@ -1,5 +1,6 @@
 "use client";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { CodeExport } from "./code-export";
 
 export function CodeContent() {
@@ -14,9 +15,9 @@ export function CodeContent() {
             Copy the generated code to use in your project
           </p>
         </div>
-        <div className="flex-1 overflow-y-auto max-w-xl mx-left rounded-lg">
+        <ScrollArea className="flex-1">
           <CodeExport />
-        </div>
+        </ScrollArea>
       </div>
     </div>
   );
