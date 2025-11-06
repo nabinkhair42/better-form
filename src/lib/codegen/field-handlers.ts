@@ -1,9 +1,11 @@
-import type { FieldHandlerContext, FieldHandlerResult } from "./types";
+import { buildSchemaForField } from "@/lib/codegen//schema-builders";
+import { applyOptional } from "@/lib/codegen//utils";
+import type { FieldHandlerContext, FieldHandlerResult } from "@/types/codegen";
 import type { FormField } from "@/types/form";
-import { applyOptional } from "./utils";
-import { buildSchemaForField } from "./schema-builders";
 
-export function handleField({ field }: FieldHandlerContext): FieldHandlerResult {
+export function handleField({
+  field,
+}: FieldHandlerContext): FieldHandlerResult {
   const schema = applyOptional(buildSchemaForField(field), field);
   const component = buildComponent(field);
 

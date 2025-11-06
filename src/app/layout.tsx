@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@/components/provider";
+import { ThemeProvider } from "@/providers/theme-toaster";
 import {
   breadcrumbJsonLd,
   defaultMetadata,

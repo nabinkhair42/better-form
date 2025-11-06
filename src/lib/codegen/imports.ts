@@ -1,4 +1,4 @@
-import type { ImportNeeds, ImportNeedKey } from "./types";
+import type { ImportNeedKey, ImportNeeds } from "@/types/codegen";
 
 const FORM_IMPORT_KEYS: ImportNeedKey[] = [
   "Form",
@@ -18,8 +18,12 @@ const SELECT_IMPORT_KEYS: ImportNeedKey[] = [
 ];
 
 export function buildImportBlock(importNeeds: ImportNeeds): string {
-  const formImports = FORM_IMPORT_KEYS.filter((key) => importNeeds[key]).join(",\n  ");
-  const selectImports = SELECT_IMPORT_KEYS.filter((key) => importNeeds[key]).join(", ");
+  const formImports = FORM_IMPORT_KEYS.filter((key) => importNeeds[key]).join(
+    ",\n  ",
+  );
+  const selectImports = SELECT_IMPORT_KEYS.filter(
+    (key) => importNeeds[key],
+  ).join(", ");
 
   const importLines = [
     `'use client';`,
@@ -33,7 +37,9 @@ export function buildImportBlock(importNeeds: ImportNeeds): string {
   }
 
   if (formImports) {
-    importLines.push(`import {\n  ${formImports}\n} from '@/components/ui/form';`);
+    importLines.push(
+      `import {\n  ${formImports}\n} from '@/components/ui/form';`,
+    );
   }
 
   if (importNeeds.Input) {
@@ -45,7 +51,9 @@ export function buildImportBlock(importNeeds: ImportNeeds): string {
   }
 
   if (selectImports) {
-    importLines.push(`import { ${selectImports} } from '@/components/ui/select';`);
+    importLines.push(
+      `import { ${selectImports} } from '@/components/ui/select';`,
+    );
   }
 
   if (importNeeds.Checkbox) {
@@ -67,7 +75,9 @@ export function buildImportBlock(importNeeds: ImportNeeds): string {
   }
 
   if (importNeeds.PhoneInput) {
-    importLines.push("import { PhoneInput } from '@/components/ui/phone-input';");
+    importLines.push(
+      "import { PhoneInput } from '@/components/ui/phone-input';",
+    );
   }
 
   if (importNeeds.CountryDropdown) {

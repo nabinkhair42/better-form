@@ -1,5 +1,5 @@
+import type { ImportNeeds } from "@/types/codegen";
 import type { FormField } from "@/types/form";
-import type { FieldPlan, ImportNeeds } from "./types";
 
 export function createInitialImportNeeds(): ImportNeeds {
   return {
@@ -27,7 +27,10 @@ export function createInitialImportNeeds(): ImportNeeds {
   };
 }
 
-export function applyBaseFormImports(field: FormField, importNeeds: ImportNeeds) {
+export function applyBaseFormImports(
+  field: FormField,
+  importNeeds: ImportNeeds,
+) {
   importNeeds.Form = true;
   importNeeds.FormControl = true;
   importNeeds.FormField = true;

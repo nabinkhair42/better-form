@@ -1,7 +1,7 @@
+import { generateReactComponent, generateZodSchema } from "@/lib/codegen";
+import { planDependencies } from "@/lib/dependencies";
+import type { FilePlan, GeneratedFile } from "@/types/codegen";
 import type { FormConfig } from "@/types/form";
-import type { FilePlan, GeneratedFile } from "./types";
-import { generateReactComponent, generateZodSchema } from "../code-generator";
-import { planDependencies } from "../dependencies";
 
 function toKebabCase(str: string): string {
   return str
