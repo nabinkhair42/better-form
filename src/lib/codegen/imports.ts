@@ -17,7 +17,12 @@ const SELECT_IMPORT_KEYS: ImportNeedKey[] = [
   "SelectValue",
 ];
 
-export function buildImportBlock(importNeeds: ImportNeeds): string {
+export function buildImportBlock(
+  importNeeds: ImportNeeds,
+  formSlug?: string,
+  schemaName: string = "formSchema",
+  typeName: string = "FormData",
+): string {
   const formImports = FORM_IMPORT_KEYS.filter((key) => importNeeds[key]).join(
     ",\n  ",
   );
@@ -86,7 +91,11 @@ export function buildImportBlock(importNeeds: ImportNeeds): string {
     );
   }
 
-  importLines.push("import { formSchema, FormData } from './schema';");
+  // Schema import - relative path from form to schema directory with dynamic names
+  const schemaImport = formSlug
+    ? `import { ${schemaName}, ${typeName} } from '@/components/better-form/schema/${formSlug}';`
+    : `import { ${schemaName}, ${typeName} } from '../schema';`;
+  importLines.push(schemaImport);
 
   return importLines.join("\n");
 }

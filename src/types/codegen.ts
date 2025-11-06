@@ -37,9 +37,10 @@ export type FieldRenderPlan = {
   defaultValueSnippet: string;
 };
 
-export type FieldPlan = SchemaFieldPlan & FieldRenderPlan & {
-  formFieldSnippet: string;
-};
+export type FieldPlan = SchemaFieldPlan &
+  FieldRenderPlan & {
+    formFieldSnippet: string;
+  };
 
 export type FormAnalysis = {
   componentName: string;
@@ -69,6 +70,15 @@ export type GeneratedFile = {
   code: string;
 };
 
+/**
+ * FilePlan represents all files that will be generated for a form.
+ *
+ * @property schema - The Zod validation schema file
+ * @property form - The React form component file
+ * @property customComponents - Custom components built on top of shadcn (not in shadcn registry)
+ *                              Examples: phone-input, country-dropdown, file-upload, etc.
+ *                              These are distributed as files in the registry, not as registryDependencies
+ */
 export type FilePlan = {
   schema: GeneratedFile;
   form: GeneratedFile;

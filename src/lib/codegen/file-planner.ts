@@ -59,8 +59,8 @@ function createPhoneInputFile(): GeneratedFile {
     label: "Phone Input",
     description: "Phone input composite component",
     language: "tsx",
-    path: "components/better-form/components/phone-input.tsx",
-    displayPath: "/components/better-form/components/phone-input.tsx",
+    path: "components/ui/phone-input.tsx",
+    displayPath: "/components/ui/phone-input.tsx",
     code: `import { CheckIcon, ChevronsUpDown } from "lucide-react";
 import * as React from "react";
 import * as RPNInput from "react-phone-number-input";
@@ -270,8 +270,8 @@ function createCountryDropdownFile(): GeneratedFile {
     label: "Country Dropdown",
     description: "Country selector component",
     language: "tsx",
-    path: "components/better-form/components/country-dropdown.tsx",
-    displayPath: "/components/better-form/components/country-dropdown.tsx",
+    path: "components/ui/country-dropdown.tsx",
+    displayPath: "/components/ui/country-dropdown.tsx",
     code: `"use client";
 import React, { forwardRef, useCallback, useEffect, useState } from "react";
 

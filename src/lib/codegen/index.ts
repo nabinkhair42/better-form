@@ -13,6 +13,12 @@ import { FormConfig, type FormField } from "@/types/form";
 
 export function generateZodSchema(formConfig: FormConfig): string {
   const analysis = analyzeForm(formConfig);
+  const componentName = sanitizeComponentName(formConfig.name);
+  const schemaName = `${
+    componentName.charAt(0).toLowerCase() + componentName.slice(1)
+  }Schema`;
+  const typeName = `${componentName}Data`;
+
   const imports = `import { z } from 'zod';`;
 
   const schemaFields = analysis.fields
@@ -20,11 +26,11 @@ export function generateZodSchema(formConfig: FormConfig): string {
     .join("\n");
 
   const schema = `
-export const formSchema = z.object({
+export const ${schemaName} = z.object({
 ${schemaFields}
 });
 
-export type FormData = z.infer<typeof formSchema>;
+export type ${typeName} = z.infer<typeof ${schemaName}>;
 `;
 
   return `${imports}\n${schema}`;
@@ -32,7 +38,21 @@ export type FormData = z.infer<typeof formSchema>;
 
 export function generateReactComponent(formConfig: FormConfig): string {
   const analysis = analyzeForm(formConfig);
-  const imports = buildImportBlock(analysis.importNeeds);
+  const componentName = sanitizeComponentName(formConfig.name);
+  const schemaName = `${
+    componentName.charAt(0).toLowerCase() + componentName.slice(1)
+  }Schema`;
+  const typeName = `${componentName}Data`;
+  const formSlug = formConfig.name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  const imports = buildImportBlock(
+    analysis.importNeeds,
+    formSlug,
+    schemaName,
+    typeName,
+  );
 
   const defaultValues = analysis.fields
     .map((field) => field.defaultValueSnippet)
@@ -44,14 +64,14 @@ export function generateReactComponent(formConfig: FormConfig): string {
 
   const component = `
 export function ${analysis.componentName}Form() {
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<${typeName}>({
+    resolver: zodResolver(${schemaName}),
     defaultValues: {
 ${defaultValues}
     },
   });
 
-  function onSubmit(values: FormData) {
+  function onSubmit(values: ${typeName}) {
     console.log(values);
     // Handle form submission here
   }

@@ -8,7 +8,7 @@ import {
 import { useRegistryGenerator } from "@/hooks/use-registry-generator";
 import type { DependencyPlan } from "@/lib/dependencies";
 import type { FilePlan } from "@/types/codegen";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface CliTabProps {
   formName: string;
@@ -19,13 +19,18 @@ interface CliTabProps {
 export function CliTab({ formName, filePlan, dependencyPlan }: CliTabProps) {
   const [packageManager, setPackageManager] = useState<PackageManager>("npm");
   const [registryUrl, setRegistryUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [uniqueId] = useState(() => {
     // Generate unique ID once on mount (timestamp + random)
     const timestamp = Date.now().toString(36);
     const random = Math.random().toString(36).substring(2, 7);
     return `${timestamp}-${random}`;
   });
-  const { generateRegistryItem, isGenerating } = useRegistryGenerator();
+  const { generateRegistryItem } = useRegistryGenerator();
+
+  // Track if we've already generated to prevent duplicate calls
+  const hasGeneratedRef = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const itemName = formName
     .toLowerCase()
@@ -36,7 +41,22 @@ export function CliTab({ formName, filePlan, dependencyPlan }: CliTabProps) {
 
   // Auto-generate and store registry on mount
   useEffect(() => {
+    // Prevent duplicate calls
+    if (hasGeneratedRef.current) {
+      return;
+    }
+
     const generateAndStoreRegistry = async () => {
+      // Cancel any in-flight request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+
+      // Create new abort controller for this request
+      abortControllerRef.current = new AbortController();
+
+      setIsLoading(true);
+
       try {
         const registryItem = await generateRegistryItem(
           formName,
@@ -47,34 +67,44 @@ export function CliTab({ formName, filePlan, dependencyPlan }: CliTabProps) {
         if (registryItem) {
           const registryId = `${itemName}-${uniqueId}`;
 
-          // Store the registry
+          // Store the registry with abort signal
           const storeResponse = await fetch("/api/r/store", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ registryId, registryItem }),
+            signal: abortControllerRef.current.signal,
           });
 
           if (storeResponse.ok) {
             const { url } = await storeResponse.json();
             setRegistryUrl(url);
+            hasGeneratedRef.current = true; // Mark as successfully generated
           } else {
             console.error("Failed to store registry");
           }
         }
       } catch (error) {
+        // Ignore abort errors
+        if (error instanceof Error && error.name === "AbortError") {
+          return;
+        }
         console.error("Failed to generate registry:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     generateAndStoreRegistry();
-  }, [
-    formName,
-    filePlan,
-    dependencyPlan,
-    itemName,
-    uniqueId,
-    generateRegistryItem,
-  ]);
+
+    // Cleanup: abort any in-flight requests when component unmounts
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+    // Only run once on mount - we use refs to prevent re-runs
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const getInstallCommand = (pm: PackageManager): string => {
     if (!registryUrl) return "";
@@ -124,7 +154,7 @@ export function CliTab({ formName, filePlan, dependencyPlan }: CliTabProps) {
           </p>
         </div>
 
-        {isGenerating || !registryUrl ? (
+        {isLoading || !registryUrl ? (
           <div className="rounded-lg border border-dashed border-muted-foreground/30 bg-muted/50 p-4 text-center">
             <p className="text-sm text-muted-foreground">
               Generating registry...
@@ -185,20 +215,6 @@ export function CliTab({ formName, filePlan, dependencyPlan }: CliTabProps) {
           </li>
         </ul>
       </section>
-
-      {/* Note about hosting */}
-      <div className="rounded-md border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30 px-3 py-3 space-y-2">
-        <p className="text-xs font-semibold text-blue-900 dark:text-blue-200">
-          � Setup Required
-        </p>
-        <p className="text-xs text-blue-900 dark:text-blue-200">
-          The API route at{" "}
-          <code className="px-1 py-0.5 rounded bg-blue-100 dark:bg-blue-900">
-            {registryUrl}
-          </code>{" "}
-          needs to return the registry JSON for this command to work.
-        </p>
-      </div>
     </div>
   );
 }
