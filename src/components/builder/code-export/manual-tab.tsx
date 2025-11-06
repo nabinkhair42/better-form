@@ -57,7 +57,7 @@ export function ManualTab({ filePlan, dependencyPlan }: ManualTabProps) {
             <p className="text-sm font-medium">Additional packages</p>
             <CodeBlockClient
               code={npmCommand}
-              label="Install npm packages"
+              label="Install packages"
               language="bash"
             />
           </div>

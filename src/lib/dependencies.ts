@@ -101,10 +101,7 @@ export function planDependencies(config: FormConfig): DependencyPlan {
         addShadcn("scroll-area", "Scrollable phone country list");
         addShadcn("input", "Phone number input field");
         addShadcn("button", "Country selector trigger");
-        addPackage(
-          "react-phone-number-input",
-          "Phone number input utilities",
-        );
+        addPackage("react-phone-number-input", "Phone number input utilities");
         addProjectComponent(
           "phone-input",
           "PhoneInput composite built on shadcn primitives",
@@ -151,7 +148,7 @@ export function planDependencies(config: FormConfig): DependencyPlan {
     actions.push({
       id: "install-packages",
       type: "package-install",
-      label: "Install npm packages",
+      label: "Install packages",
       description: "Install package dependencies for generated code",
       commands: buildPackageCommandVariants(packages.map((pkg) => pkg.name)),
     });

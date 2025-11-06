@@ -16,7 +16,8 @@ const CODE_TABS: { id: CodeTabId; label: string }[] = [
 ];
 
 export function CodeExport() {
-  const { hasFields, filePlan, dependencyPlan } = useCodeExportData();
+  const { hasFields, filePlan, dependencyPlan, formConfig } =
+    useCodeExportData();
   const [activeTab, setActiveTab] = useState<CodeTabId>(
     CODE_TABS[0]?.id ?? "manual",
   );
@@ -27,7 +28,13 @@ export function CodeExport() {
 
   const panels: Record<CodeTabId, ReactNode> = {
     manual: <ManualTab filePlan={filePlan} dependencyPlan={dependencyPlan} />,
-    cli: <CliTab filePlan={filePlan} dependencyPlan={dependencyPlan} />,
+    cli: (
+      <CliTab
+        formName={formConfig.name}
+        filePlan={filePlan}
+        dependencyPlan={dependencyPlan}
+      />
+    ),
   };
 
   return (
