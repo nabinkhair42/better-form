@@ -11,15 +11,15 @@ import { useCodeExportData } from "./use-code-export-data";
 type CodeTabId = "manual" | "cli";
 
 const CODE_TABS: { id: CodeTabId; label: string }[] = [
-  { id: "manual", label: "Manual" },
   { id: "cli", label: "CLI" },
+  { id: "manual", label: "Manual" },
 ];
 
 export function CodeExport() {
   const { hasFields, filePlan, dependencyPlan, formConfig } =
     useCodeExportData();
   const [activeTab, setActiveTab] = useState<CodeTabId>(
-    CODE_TABS[0]?.id ?? "manual",
+    CODE_TABS[0]?.id ?? "cli",
   );
 
   if (!hasFields) {

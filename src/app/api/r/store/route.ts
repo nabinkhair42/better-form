@@ -1,29 +1,21 @@
+import clientPromise from "@/lib/mongodb";
 import type { RegistryItem } from "@/lib/registry/registry-builder";
 import { NextRequest, NextResponse } from "next/server";
 
-// Temporary in-memory storage with expiration (5 minutes)
-const EXPIRATION_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+// Expiration time: 24 hours (permanent storage with TTL index in MongoDB)
+const EXPIRATION_TIME = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
 interface StoredRegistry {
+  _id: string;
+  registryId: string;
   item: RegistryItem;
-  expiresAt: number;
+  createdAt: Date;
+  expiresAt: Date;
 }
-
-const registryStore = new Map<string, StoredRegistry>();
-
-// Cleanup expired registries every minute
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, value] of registryStore.entries()) {
-    if (now > value.expiresAt) {
-      registryStore.delete(key);
-    }
-  }
-}, 60 * 1000);
 
 /**
  * POST /api/r/store
- * Temporarily stores a registry item (expires in 5 minutes)
+ * Stores a registry item in MongoDB (expires in 24 hours via TTL index)
  */
 export async function POST(request: NextRequest) {
   try {
@@ -40,11 +32,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Store with expiration timestamp
-    registryStore.set(registryId, {
-      item: registryItem,
-      expiresAt: Date.now() + EXPIRATION_TIME,
-    });
+    const client = await clientPromise;
+    const db = client.db("better-form");
+    const collection = db.collection<StoredRegistry>("registries");
+
+    // Create TTL index if it doesn't exist (expires documents after expiresAt)
+    await collection.createIndex(
+      { expiresAt: 1 },
+      { expireAfterSeconds: 0, background: true },
+    );
+
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + EXPIRATION_TIME);
+
+    // Upsert the registry (replace if exists)
+    await collection.updateOne(
+      { registryId },
+      {
+        $set: {
+          registryId,
+          item: registryItem,
+          createdAt: now,
+          expiresAt,
+        },
+      },
+      { upsert: true },
+    );
 
     const url = `${request.nextUrl.origin}/api/r/${registryId}.json`;
 
@@ -65,30 +78,45 @@ export async function POST(request: NextRequest) {
 
 /**
  * GET /api/r/store
- * Retrieves a stored registry item (checks expiration)
+ * Retrieves a stored registry item from MongoDB
  */
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const registryId = searchParams.get("id");
+  try {
+    const { searchParams } = new URL(request.url);
+    const registryId = searchParams.get("id");
 
-  if (!registryId) {
-    return NextResponse.json({ error: "Missing registry ID" }, { status: 400 });
-  }
+    if (!registryId) {
+      return NextResponse.json(
+        { error: "Missing registry ID" },
+        { status: 400 },
+      );
+    }
 
-  const stored = registryStore.get(registryId);
+    const client = await clientPromise;
+    const db = client.db("better-form");
+    const collection = db.collection<StoredRegistry>("registries");
 
-  if (!stored) {
+    const stored = await collection.findOne({ registryId });
+
+    if (!stored) {
+      return NextResponse.json(
+        { error: "Registry not found or expired" },
+        { status: 404 },
+      );
+    }
+
+    // Check if expired (MongoDB TTL might not have cleaned it up yet)
+    if (new Date() > stored.expiresAt) {
+      await collection.deleteOne({ registryId });
+      return NextResponse.json({ error: "Registry expired" }, { status: 410 }); // 410 Gone
+    }
+
+    return NextResponse.json(stored.item);
+  } catch (error) {
+    console.error("Failed to retrieve registry:", error);
     return NextResponse.json(
-      { error: "Registry not found or expired" },
-      { status: 404 },
+      { error: "Failed to retrieve registry" },
+      { status: 500 },
     );
   }
-
-  // Check if expired
-  if (Date.now() > stored.expiresAt) {
-    registryStore.delete(registryId);
-    return NextResponse.json({ error: "Registry expired" }, { status: 410 }); // 410 Gone
-  }
-
-  return NextResponse.json(stored.item);
 }

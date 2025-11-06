@@ -81,19 +81,22 @@ export function buildImportBlock(
 
   if (importNeeds.PhoneInput) {
     importLines.push(
-      "import { PhoneInput } from '@/components/ui/phone-input';",
+      "import { PhoneInput } from '@/components/better-form/components/phone-input';",
     );
   }
 
   if (importNeeds.CountryDropdown) {
     importLines.push(
-      "import { CountryDropdown } from '@/components/ui/country-dropdown';",
+      "import { CountryDropdown } from '@/components/better-form/components/country-dropdown';",
     );
   }
 
-  // Schema import - relative path from form to schema directory with dynamic names
+  // Schema import - use relative path from form directory to schema directory
+  // Form location: components/better-form/form/{formSlug}.tsx
+  // Schema location: components/better-form/schema/{formSlug}.ts
+  // Relative path: ../schema/{formSlug}
   const schemaImport = formSlug
-    ? `import { ${schemaName}, ${typeName} } from '@/components/better-form/schema/${formSlug}';`
+    ? `import { ${schemaName}, ${typeName} } from '../schema/${formSlug}';`
     : `import { ${schemaName}, ${typeName} } from '../schema';`;
   importLines.push(schemaImport);
 
