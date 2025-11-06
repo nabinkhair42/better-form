@@ -8,9 +8,9 @@ import { NextRequest, NextResponse } from "next/server";
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { filename: string } },
+  { params }: { params: Promise<{ filename: string }> },
 ) {
-  const { filename } = params;
+  const { filename } = await params;
 
   // Extract the registry ID from filename (e.g., "contact-form-abc123.json" -> "contact-form-abc123")
   const registryId = filename.replace(/\.json$/, "");
