@@ -1,14 +1,13 @@
 "use client";
 
-import { CodeBlockClient } from "@/components/ui/code-block";
-import {
-  type PackageManager,
-  PackageManagerSelector,
-} from "@/components/ui/package-manager-selector";
+import { Snippet } from "@/components/ui/snippet";
+import type { PackageManager } from "@/stores/package-manager-store";
 import { useRegistryGenerator } from "@/hooks/use-registry-generator";
 import type { DependencyPlan } from "@/lib/dependencies";
 import type { FilePlan } from "@/types/codegen";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+const PACKAGE_MANAGERS: PackageManager[] = ["npm", "pnpm", "yarn", "bun"];
 
 interface CliTabProps {
   formName: string;
@@ -17,7 +16,6 @@ interface CliTabProps {
 }
 
 export function CliTab({ formName, filePlan, dependencyPlan }: CliTabProps) {
-  const [packageManager, setPackageManager] = useState<PackageManager>("npm");
   const [registryUrl, setRegistryUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [uniqueId] = useState(() => {
@@ -61,7 +59,7 @@ export function CliTab({ formName, filePlan, dependencyPlan }: CliTabProps) {
         const registryItem = await generateRegistryItem(
           formName,
           filePlan,
-          dependencyPlan,
+          dependencyPlan
         );
 
         if (registryItem) {
@@ -106,24 +104,32 @@ export function CliTab({ formName, filePlan, dependencyPlan }: CliTabProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getInstallCommand = (pm: PackageManager): string => {
-    if (!registryUrl) return "";
-
-    switch (pm) {
-      case "npm":
-        return `npx shadcn@latest add ${registryUrl}`;
-      case "pnpm":
-        return `pnpm dlx shadcn@latest add ${registryUrl}`;
-      case "yarn":
-        return `yarn dlx shadcn@latest add ${registryUrl}`;
-      case "bun":
-        return `bunx shadcn@latest add ${registryUrl}`;
-      default:
-        return `npx shadcn@latest add ${registryUrl}`;
+  const installCommands = useMemo(() => {
+    if (!registryUrl) {
+      return {} as Partial<Record<PackageManager, string>>;
     }
-  };
 
-  const installCommand = getInstallCommand(packageManager);
+    return PACKAGE_MANAGERS.reduce<Partial<Record<PackageManager, string>>>(
+      (acc, pm) => {
+        switch (pm) {
+          case "npm":
+            acc[pm] = `npx shadcn@latest add ${registryUrl}`;
+            break;
+          case "pnpm":
+            acc[pm] = `pnpm dlx shadcn@latest add ${registryUrl}`;
+            break;
+          case "yarn":
+            acc[pm] = `yarn dlx shadcn@latest add ${registryUrl}`;
+            break;
+          case "bun":
+            acc[pm] = `bunx shadcn@latest add ${registryUrl}`;
+            break;
+        }
+        return acc;
+      },
+      {},
+    );
+  }, [registryUrl]);
 
   return (
     <div className="space-y-6">
@@ -136,12 +142,6 @@ export function CliTab({ formName, filePlan, dependencyPlan }: CliTabProps) {
           dependencies, and configure shadcn/ui components.
         </p>
       </div>
-
-      {/* Package Manager Selector */}
-      <PackageManagerSelector
-        value={packageManager}
-        onValueChange={setPackageManager}
-      />
 
       {/* Main Installation Command */}
       <section className="space-y-3">
@@ -161,11 +161,7 @@ export function CliTab({ formName, filePlan, dependencyPlan }: CliTabProps) {
             </p>
           </div>
         ) : (
-          <CodeBlockClient
-            code={installCommand}
-            language="bash"
-            label={`Install with ${packageManager}`}
-          />
+          <Snippet commands={installCommands} />
         )}
       </section>
 

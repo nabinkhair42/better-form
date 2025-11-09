@@ -9,19 +9,20 @@ import { PasswordSection } from "@/components/builder/layout/field-properties/pa
 import { UrlSection } from "@/components/builder/layout/field-properties/url-section";
 import { ValidationBasicsSection } from "@/components/builder/layout/field-properties/validation-basics-section";
 import { generateFieldId } from "@/lib/fields/field-utils";
-import { useFormStore } from "@/store/form-store";
+import { useFormStore } from "@/stores/form-store";
 
 export function PropertiesPanel() {
   const { formConfig, selectedFieldId, updateField } = useFormStore();
 
   const selectedField = formConfig.fields.find(
-    (field) => field.id === selectedFieldId,
+    (field) => field.id === selectedFieldId
   );
 
   if (!selectedField) {
     return (
-      <div className="w-64 lg:w-72 border-l border-border bg-card p-4 h-full">
+      <div className="w-64 border-l border-border bg-card p-4 h-full">
         <div className="text-center text-muted-foreground mt-8">
+
           <p className="text-sm">Select a field to edit its properties</p>
         </div>
       </div>
@@ -50,17 +51,14 @@ export function PropertiesPanel() {
     selectedField.type === "select" || selectedField.type === "radio";
 
   return (
-    <div className="w-64 lg:w-72 border-r border bg-sidebar h-full overflow-y-auto">
-      <div className="p-3 border-b h-[93px]">
+    <div className="w-64 border-r border bg-sidebar h-full overflow-y-auto">
+      <div className="p-[11.5px] border-b">
         <h3 className="text-lg font-semibold text-foreground">
           Field Properties
         </h3>
-        <p className="text-sm text-muted-foreground capitalize">
-          {selectedField.type} Field
-        </p>
       </div>
 
-      <div className="space-y-4 p-3">
+      <div className="space-y-4 p-[11.5px]">
         <GeneralSection
           field={selectedField}
           onLabelChange={handleLabelChange}

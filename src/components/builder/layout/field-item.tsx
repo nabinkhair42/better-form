@@ -18,7 +18,6 @@ type FieldTypeEntry = {
   id: string;
   type: FormFieldType;
   label: string;
-  description: string;
 };
 
 export function FieldItem({
@@ -28,7 +27,7 @@ export function FieldItem({
   item: FieldTypeEntry;
   onAdd: (item: FieldTypeEntry) => void;
 }) {
-  const iconProps = { className: "h-4 w-4 text-muted-foreground shrink-0" };
+  const iconProps = { className: "size-4 text-muted-foreground shrink-0" };
 
   const renderIcon = () => {
     switch (item.type) {
@@ -59,18 +58,15 @@ export function FieldItem({
         {renderIcon()}
         <div className="min-w-0 flex-1">
           <div className="text-sm font-medium truncate">{item.label}</div>
-          <div className="text-xs text-muted-foreground truncate">
-            {item.description}
-          </div>
         </div>
       </div>
       <Button
         variant="ghost"
         size="icon"
         onClick={() => onAdd(item)}
-        className="h-7 w-7"
+        className="size-6"
       >
-        <Plus className="h-4 w-4" />
+        <Plus className="size-4" />
       </Button>
     </div>
   );

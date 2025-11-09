@@ -1,15 +1,10 @@
 "use client";
 
-import { CodeBlockClient } from "@/components/ui/code-block";
+import { CodeBlock, CodeBlockCode, CodeBlockGroup } from "@/components/ui/code-block";
+import { CopyButton } from "@/components/ui/copy-button";
+import { Snippet } from "@/components/ui/snippet";
 import type { DependencyPlan } from "@/lib/dependencies";
 import type { FilePlan } from "@/types/codegen";
-import { useState } from "react";
-import {
-  type PackageManager,
-  PackageManagerSelector,
-  buildNpmCommand,
-  buildShadcnCommand,
-} from "../../ui/package-manager-selector";
 
 interface ManualTabProps {
   filePlan: FilePlan;
@@ -17,8 +12,6 @@ interface ManualTabProps {
 }
 
 export function ManualTab({ filePlan, dependencyPlan }: ManualTabProps) {
-  const [packageManager, setPackageManager] = useState<PackageManager>("npm");
-
   const allFiles = [
     filePlan.schema,
     filePlan.form,
@@ -28,19 +21,42 @@ export function ManualTab({ filePlan, dependencyPlan }: ManualTabProps) {
   const shadcnResources = dependencyPlan.shadcn
     .map((item) => item.slug)
     .join(" ");
-  const npmPackages = dependencyPlan.packages.map((pkg) => pkg.name).join(" ");
 
-  const shadcnCommand = buildShadcnCommand(packageManager, shadcnResources);
-  const npmCommand = buildNpmCommand(packageManager, npmPackages);
+  const npmCommands = dependencyPlan.packages.reduce(
+    (acc, pkg) => {
+      acc.npm = acc.npm
+        ? `${acc.npm} ${pkg.name}`
+        : `npm install ${pkg.name}`;
+      acc.pnpm = acc.pnpm
+        ? `${acc.pnpm} ${pkg.name}`
+        : `pnpm add ${pkg.name}`;
+      acc.yarn = acc.yarn
+        ? `${acc.yarn} ${pkg.name}`
+        : `yarn add ${pkg.name}`;
+      acc.bun = acc.bun
+        ? `${acc.bun} ${pkg.name}`
+        : `bun add ${pkg.name}`;
+      return acc;
+    },
+    {
+      npm: "" as string,
+      pnpm: "" as string,
+      yarn: "" as string,
+      bun: "" as string,
+    },
+  );
+
+  const shadcnCommands = shadcnResources
+    ? {
+        npm: `npx shadcn@latest add ${shadcnResources}`,
+        pnpm: `pnpm dlx shadcn@latest add ${shadcnResources}`,
+        yarn: `yarn dlx shadcn@latest add ${shadcnResources}`,
+        bun: `bunx shadcn@latest add ${shadcnResources}`,
+      }
+    : {};
 
   return (
     <div className="space-y-8">
-      {/* Package Manager Selector */}
-      <PackageManagerSelector
-        value={packageManager}
-        onValueChange={setPackageManager}
-      />
-
       {/* Dependencies */}
       <section className="space-y-4">
         <div>
@@ -55,11 +71,7 @@ export function ManualTab({ filePlan, dependencyPlan }: ManualTabProps) {
         {dependencyPlan.packages.length > 0 && (
           <div className="space-y-2">
             <p className="text-sm font-medium">Additional packages</p>
-            <CodeBlockClient
-              code={npmCommand}
-              label="Install packages"
-              language="bash"
-            />
+            <Snippet commands={npmCommands} />
           </div>
         )}
 
@@ -67,11 +79,7 @@ export function ManualTab({ filePlan, dependencyPlan }: ManualTabProps) {
         {dependencyPlan.shadcn.length > 0 && (
           <div className="space-y-2">
             <p className="text-sm font-medium">shadcn/ui components</p>
-            <CodeBlockClient
-              code={shadcnCommand}
-              label="Install shadcn/ui components"
-              language="bash"
-            />
+            <Snippet commands={shadcnCommands} />
           </div>
         )}
 
@@ -106,11 +114,21 @@ export function ManualTab({ filePlan, dependencyPlan }: ManualTabProps) {
                   {file.description}
                 </p>
               )}
-              <CodeBlockClient
-                code={file.code}
-                language={file.language}
-                meta={`title="${file.displayPath}"`}
-              />
+              <CodeBlock>
+                <CodeBlockGroup className="border-b border-border bg-muted/40 px-4 py-2">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {file.displayPath}
+                  </span>
+                  <CopyButton
+                    value={file.code}
+                    aria-label={`Copy ${file.displayPath}`}
+                  />
+                </CodeBlockGroup>
+                <CodeBlockCode
+                  code={file.code}
+                  language={file.language ?? "tsx"}
+                />
+              </CodeBlock>
             </div>
           ))}
         </div>

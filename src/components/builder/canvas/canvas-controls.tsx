@@ -25,17 +25,17 @@ export function CanvasControls({
 
   return (
     <div className="absolute bottom-4 right-4 z-10">
-      <div className="flex items-center gap-2 bg-card border rounded-lg p-2 shadow-sm">
+      <div className="flex items-center gap-2 p-1 border rounded-md bg-background dark:bg-input/30">
         <Button
           variant="ghost"
           size="sm"
           onClick={onZoomOut}
           disabled={disableZoomOut}
-          className="h-8 w-8 p-0"
+          className="h-7 w-7 p-0"
         >
           <ZoomOut className="h-4 w-4" />
         </Button>
-        <span className="text-sm font-medium min-w-12 text-center">
+        <span className="text-sm font-medium min-w-10 text-center">
           {Math.round(zoom)}%
         </span>
         <Button
@@ -43,7 +43,7 @@ export function CanvasControls({
           size="sm"
           onClick={onZoomIn}
           disabled={disableZoomIn}
-          className="h-8 w-8 p-0"
+          className="h-7 w-7 p-0"
         >
           <ZoomIn className="h-4 w-4" />
         </Button>
@@ -52,7 +52,7 @@ export function CanvasControls({
           variant="ghost"
           size="sm"
           onClick={onReset}
-          className="h-8 w-8 p-0"
+          className="h-7 w-7 p-0"
           title="Reset zoom and position"
         >
           <RotateCcw className="h-4 w-4" />

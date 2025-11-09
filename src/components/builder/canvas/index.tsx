@@ -1,17 +1,17 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useFormStore } from "@/store/form-store";
+import { useFormStore } from "@/stores/form-store";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useMemo } from "react";
-import { SortableField } from "../sortable-field";
 import { CanvasControls } from "./canvas-controls";
 import { CanvasEmptyState } from "./canvas-empty-state";
 import { CanvasFormHeader } from "./canvas-form-header";
 import { CanvasTips } from "./canvas-tips";
+import { SortableField } from "./sortable-field";
 import { useCanvasPanZoom } from "./use-canvas-pan-zoom";
 
 export function Canvas() {
@@ -36,7 +36,7 @@ export function Canvas() {
 
   const fieldIds = useMemo(
     () => formConfig.fields.map((field) => field.id),
-    [formConfig.fields],
+    [formConfig.fields]
   );
 
   const handleNameSubmit = (value: string) => {
@@ -64,7 +64,7 @@ export function Canvas() {
           "absolute inset-0",
           "bg-size-[20px_20px]",
           "bg-[radial-gradient(#d4d4d4_1px,transparent_1px)]",
-          "dark:bg-[radial-gradient(#404040_1px,transparent_1px)]",
+          "dark:bg-[radial-gradient(#404040_1px,transparent_1px)]"
         )}
         style={{
           cursor: isDragging ? "grabbing" : "default",

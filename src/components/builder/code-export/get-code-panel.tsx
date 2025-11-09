@@ -1,6 +1,11 @@
 "use client";
 
-import { CodeBlockClient } from "@/components/ui/code-block";
+import {
+  CodeBlock,
+  CodeBlockCode,
+  CodeBlockGroup,
+} from "@/components/ui/code-block";
+import { CopyButton } from "@/components/ui/copy-button";
 import {
   Tabs,
   TabsContent,
@@ -101,11 +106,18 @@ function ActionCommands({ action }: { action: DependencyAction }) {
       ) : null}
 
       {activeCommand ? (
-        <CodeBlockClient
-          code={activeCommand.command}
-          language="bash"
-          label={activeCommand.label}
-        />
+        <CodeBlock>
+          <CodeBlockGroup className="border-b border-border bg-muted/40 px-4 py-2">
+            <span className="text-xs font-medium text-muted-foreground">
+              {activeCommand.label}
+            </span>
+            <CopyButton
+              value={activeCommand.command}
+              aria-label={`Copy ${activeCommand.label}`}
+            />
+          </CodeBlockGroup>
+          <CodeBlockCode code={activeCommand.command} language="bash" />
+        </CodeBlock>
       ) : null}
     </div>
   );

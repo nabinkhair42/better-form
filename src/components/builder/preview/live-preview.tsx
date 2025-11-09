@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/shadcn/button";
 import {
   Form,
   FormControl,
@@ -8,8 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/shadcn/form";
-import { Button } from "@/components/ui/shadcn/button";
-import { useFormStore } from "@/store/form-store";
+import { useFormStore } from "@/stores/form-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo } from "react";
 import { useForm } from "react-hook-form";
@@ -27,7 +27,7 @@ export function LivePreview() {
 
   const defaultValues = useMemo(
     () => buildDefaultValues(formConfig) as FormValues,
-    [formConfig],
+    [formConfig]
   );
 
   const form = useForm<FormValues>({

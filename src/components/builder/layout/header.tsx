@@ -2,7 +2,7 @@
 
 import { AppIcon } from "@/components/ui/app-icon";
 import { Button } from "@/components/ui/shadcn/button";
-import { useFormStore } from "@/store/form-store";
+import { useFormStore } from "@/stores/form-store";
 import { Menu, X } from "lucide-react";
 
 interface HeaderProps {
@@ -21,7 +21,7 @@ export function Header({
   onSidebarToggle,
   onPropertiesToggle,
 }: HeaderProps) {
-  const { formConfig, clearForm, selectedFieldId } = useFormStore();
+  const { selectedFieldId } = useFormStore();
 
   return (
     <header className="border-b border-border bg-card px-4 py-3">
@@ -41,7 +41,9 @@ export function Header({
             )}
           </Button>
           <AppIcon size={20} aria-hidden className="shrink-0" />
-          <h1 className="text-xl font-semibold text-foreground">Better Form</h1>
+          <h1 className="text-xl font-semibold text-foreground hidden md:flex">
+            Better Form
+          </h1>
         </div>
 
         {/* Center - Navigation tabs */}
@@ -86,15 +88,6 @@ export function Header({
             </Button>
           )}
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={clearForm}
-            disabled={formConfig.fields.length === 0}
-            className="hidden sm:flex"
-          >
-            Clear Form
-          </Button>
         </div>
       </div>
     </header>

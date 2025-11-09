@@ -1,12 +1,12 @@
 "use client";
 
-import { BuilderContent } from "@/components/builder/builder-content";
+import { Canvas } from "@/components/builder/canvas";
 import { CodeContent } from "@/components/builder/code-export/code-content";
 import { PropertiesPanel } from "@/components/builder/layout/field-properties/properties-panel";
+import { Sidebar } from "@/components/builder/layout/form-fields-sidebar";
 import { Header } from "@/components/builder/layout/header";
-import { Sidebar } from "@/components/builder/layout/sidebar";
 import { PreviewContent } from "@/components/builder/preview/preview-content";
-import { useFormStore } from "@/store/form-store";
+import { useFormStore } from "@/stores/form-store";
 import {
   DndContext,
   DragEndEvent,
@@ -18,7 +18,7 @@ import { useState } from "react";
 
 export function FormBuilder() {
   const [activeTab, setActiveTab] = useState<"builder" | "preview" | "code">(
-    "builder",
+    "builder"
   );
   const [activeId, setActiveId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -38,10 +38,10 @@ export function FormBuilder() {
     // Handle reordering existing fields within canvas
     if (active.id !== over.id) {
       const oldIndex = formConfig.fields.findIndex(
-        (field) => field.id === active.id,
+        (field) => field.id === active.id
       );
       const newIndex = formConfig.fields.findIndex(
-        (field) => field.id === over.id,
+        (field) => field.id === over.id
       );
 
       if (oldIndex !== -1 && newIndex !== -1) {
@@ -87,7 +87,7 @@ export function FormBuilder() {
           </div>
 
           {/* Main Content Area - Changes based on active tab */}
-          {activeTab === "builder" && <BuilderContent />}
+          {activeTab === "builder" && <Canvas />}
           {activeTab === "preview" && <PreviewContent />}
           {activeTab === "code" && <CodeContent />}
 

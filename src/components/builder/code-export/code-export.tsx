@@ -1,12 +1,12 @@
 "use client";
 
+import { CliTab } from "@/components/builder/code-export/cli-tab";
+import { CodeExportEmptyState } from "@/components/builder/code-export/code-export-empty-state";
+import { ManualTab } from "@/components/builder/code-export/manual-tab";
+import { useCodeExportData } from "@/components/builder/code-export/use-code-export-data";
 import { Button } from "@/components/ui/shadcn/button";
 import { ScrollArea } from "@/components/ui/shadcn/scroll-area";
 import { useState, type ReactNode } from "react";
-import { CliTab } from "./cli-tab";
-import { CodeExportEmptyState } from "./code-export-empty-state";
-import { ManualTab } from "./manual-tab";
-import { useCodeExportData } from "./use-code-export-data";
 
 type CodeTabId = "manual" | "cli";
 
@@ -19,7 +19,7 @@ export function CodeExport() {
   const { hasFields, filePlan, dependencyPlan, formConfig } =
     useCodeExportData();
   const [activeTab, setActiveTab] = useState<CodeTabId>(
-    CODE_TABS[0]?.id ?? "cli",
+    CODE_TABS[0]?.id ?? "cli"
   );
 
   if (!hasFields) {

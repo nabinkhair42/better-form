@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/shadcn/button";
-import { useFormStore } from "@/store/form-store";
+import { useFormStore } from "@/stores/form-store";
 import { FormField } from "@/types/form";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";

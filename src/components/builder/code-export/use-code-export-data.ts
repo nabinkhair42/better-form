@@ -1,7 +1,7 @@
 import { generateReactComponent, generateZodSchema } from "@/lib/codegen";
 import { planFiles } from "@/lib/codegen/file-planner";
 import { planDependencies, type DependencySummary } from "@/lib/dependencies";
-import { useFormStore } from "@/store/form-store";
+import { useFormStore } from "@/stores/form-store";
 import { useMemo } from "react";
 
 export function useCodeExportData() {
