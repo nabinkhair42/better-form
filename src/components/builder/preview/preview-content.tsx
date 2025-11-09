@@ -5,11 +5,7 @@ import { LivePreview } from "./live-preview";
 
 export function PreviewContent() {
   return (
-    <PanelSection
-      title="Live Preview"
-      description="This is how your form will look and behave"
-      contentClassName="max-w-4xl"
-    >
+    <PanelSection title="Live Preview">
       <LivePreview />
     </PanelSection>
   );

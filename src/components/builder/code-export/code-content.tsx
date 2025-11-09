@@ -7,7 +7,6 @@ export function CodeContent() {
   return (
     <PanelSection
       title="Export Code"
-      description="Copy the generated code to use in your project"
     >
       <CodeExport />
     </PanelSection>
