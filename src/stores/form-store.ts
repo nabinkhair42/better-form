@@ -18,7 +18,7 @@ interface FormStore {
 
 const defaultFormConfig: FormConfig = {
   id: "form-1",
-  name: "Untitled Form",
+  name: "Better Form",
   description: "Form description",
   fields: [],
 };

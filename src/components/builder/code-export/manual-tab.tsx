@@ -1,6 +1,11 @@
 "use client";
 
-import { CodeBlock, CodeBlockCode, CodeBlockGroup } from "@/components/ui/code-block";
+import { ReactIcon } from "@/assets/icons";
+import {
+  CodeBlock,
+  CodeBlockCode,
+  CodeBlockGroup,
+} from "@/components/ui/code-block";
 import { CopyButton } from "@/components/ui/copy-button";
 import { Snippet } from "@/components/ui/snippet";
 import type { DependencyPlan } from "@/lib/dependencies";
@@ -24,18 +29,10 @@ export function ManualTab({ filePlan, dependencyPlan }: ManualTabProps) {
 
   const npmCommands = dependencyPlan.packages.reduce(
     (acc, pkg) => {
-      acc.npm = acc.npm
-        ? `${acc.npm} ${pkg.name}`
-        : `npm install ${pkg.name}`;
-      acc.pnpm = acc.pnpm
-        ? `${acc.pnpm} ${pkg.name}`
-        : `pnpm add ${pkg.name}`;
-      acc.yarn = acc.yarn
-        ? `${acc.yarn} ${pkg.name}`
-        : `yarn add ${pkg.name}`;
-      acc.bun = acc.bun
-        ? `${acc.bun} ${pkg.name}`
-        : `bun add ${pkg.name}`;
+      acc.npm = acc.npm ? `${acc.npm} ${pkg.name}` : `npm install ${pkg.name}`;
+      acc.pnpm = acc.pnpm ? `${acc.pnpm} ${pkg.name}` : `pnpm add ${pkg.name}`;
+      acc.yarn = acc.yarn ? `${acc.yarn} ${pkg.name}` : `yarn add ${pkg.name}`;
+      acc.bun = acc.bun ? `${acc.bun} ${pkg.name}` : `bun add ${pkg.name}`;
       return acc;
     },
     {
@@ -43,7 +40,7 @@ export function ManualTab({ filePlan, dependencyPlan }: ManualTabProps) {
       pnpm: "" as string,
       yarn: "" as string,
       bun: "" as string,
-    },
+    }
   );
 
   const shadcnCommands = shadcnResources
@@ -56,7 +53,7 @@ export function ManualTab({ filePlan, dependencyPlan }: ManualTabProps) {
     : {};
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Dependencies */}
       <section className="space-y-4">
         <div>
@@ -83,17 +80,7 @@ export function ManualTab({ filePlan, dependencyPlan }: ManualTabProps) {
           </div>
         )}
 
-        {/* Project components note */}
-        {dependencyPlan.projectComponents.length > 0 && (
-          <div className="rounded-md border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 px-3 py-2">
-            <p className="text-xs text-amber-900 dark:text-amber-200">
-              <span className="font-semibold">Note:</span> This form uses custom
-              components (
-              {dependencyPlan.projectComponents.map((c) => c.name).join(", ")})
-              that are included in the generated files above.
-            </p>
-          </div>
-        )}
+       
       </section>
 
       {/* Generated Files */}
@@ -115,10 +102,11 @@ export function ManualTab({ filePlan, dependencyPlan }: ManualTabProps) {
                 </p>
               )}
               <CodeBlock>
-                <CodeBlockGroup className="border-b border-border bg-muted/40 px-4 py-2">
-                  <span className="text-xs font-medium text-muted-foreground">
-                    {file.displayPath}
-                  </span>
+                <CodeBlockGroup className="border-b border-border px-4 py-1">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <ReactIcon className="size-4" aria-hidden />
+                    <span className="text-xs font-medium">@{file.displayPath}</span>
+                  </div>
                   <CopyButton
                     value={file.code}
                     aria-label={`Copy ${file.displayPath}`}

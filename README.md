@@ -1,74 +1,37 @@
 # Better Form
 
-A next-generation developer-first dynamic form builder for React and Next.js. Build powerful forms with drag & drop, live preview, TypeScript, Zod validation, and Shadcn/UI components.
+Better Form is an open-source tool designed to make building, sharing, and managing reusable UI components effortless.  
+It now supports the **[shadcn/ui](https://ui.shadcn.com)** registry CLI for seamless component distribution across projects.
 
-**[Live Demo](https://better-form.nabinkhair.com.np)**
+![Better Form](/public/og-image.png)
 
-## Features
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-better--form?style=for-the-badge)](https://better-form.nabinkhair.com.np)
 
-- **shadcn/ui Integration** - Beautiful, accessible components
-- **Drag & Drop Builder** - Intuitive form building interface
-- **Live Preview** - Real-time form preview with validation
-- **Type-Safe** - Full TypeScript support with Zod validation
-- **React Hook Form** - Powerful form state management
-- **Code Export** - Generate production-ready code
-- **One-Command Installation** - Install forms via shadcn CLI
-- **MongoDB Storage** - Persistent registry storage for reliable distribution
-- **Responsive** - Mobile-first design
+Better Form helps developers streamline the process of creating and distributing component code by integrating modern frontend workflows with automated registry support.  
+It’s built for teams and individual developers who value speed, consistency, and maintainable UI codebases.
 
-## Quick Start
+## Contributing
 
-### Prerequisites
+Interested in helping shape Better Form? Contributions are welcome! Here’s how you can get started:
 
-- Node.js 18+ and pnpm
-- MongoDB Atlas account (free tier) - [Setup Guide](./MONGODB_SETUP.md)
+1. Fork the repository.
+2. Create a feature branch: `git checkout -b feature/amazing-improvement`.
+3. Commit your changes: `git commit -m "feat: add amazing improvement"`.
+4. Push the branch: `git push origin feature/amazing-improvement`.
+5. Open a pull request and describe the motivation behind your changes.
 
-### Installation
+Please keep pull requests focused and include screenshots or screen recordings for UI updates.
 
-1. Clone the repository:
+## Community & Support
 
-```bash
-git clone https://github.com/nabinkhair42/better-form.git
-cd better-form
-```
+- **Issues** – Found a bug or have a feature request? [Open an issue](https://github.com/nabinkhair42/better-form/issues).
+- **Discussions** – Share ideas, ask questions, or showcase what you’ve built.
+- **Twitter** – Follow [@khairnabin](https://twitter.com/khairnabin) for updates and release announcements.
 
-2. Install dependencies:
+## License
 
-```bash
-pnpm install
-```
+Better Form is released under the [MIT License](./LICENSE). Feel free to use it in commercial and personal projects.
 
-3. Set up environment variables:
+---
 
-   - Copy `.env.example` to `.env.local`
-
-   ```bash
-   MONGODB_URI=your-mongodb-connection-string
-   ```
-
-4. Run the development server:
-
-```bash
-pnpm dev
-```
-
-5. Open [http://localhost:3000](http://localhost:3000)
-
-## MongoDB Setup
-
-Better Form uses MongoDB to store registry data for form distribution. This enables:
-
-- Persistent storage across deployments
-- Reliable form distribution via shadcn CLI
-- Automatic cleanup with TTL indexes
-
-
-## Tech Stack
-
-- Next.js 16
-- TypeScript
-- Zod
-- shadcn/ui
-- React Hook Form
-- Tailwind CSS
-- MongoDB
+Made with care by [Nabin Khair](https://github.com/nabinkhair42) and the open-source community.

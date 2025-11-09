@@ -1,9 +1,10 @@
 "use client";
 
+import { GithubIcon } from "@/assets/icons";
 import { AppIcon } from "@/components/ui/app-icon";
 import { Button } from "@/components/ui/shadcn/button";
 import { useFormStore } from "@/stores/form-store";
-import { Menu, X } from "lucide-react";
+import { Code, Grid2X2Check, Menu, View, X } from "lucide-react";
 
 interface HeaderProps {
   activeTab: "builder" | "preview" | "code";
@@ -13,6 +14,16 @@ interface HeaderProps {
   propertiesOpen: boolean;
   onPropertiesToggle: () => void;
 }
+
+const TabsConfig = [
+  {
+    id: "builder",
+    label: "Builder",
+    icon: <Grid2X2Check className="size-4" />,
+  },
+  { id: "preview", label: "Preview", icon: <View className="size-4" /> },
+  { id: "code", label: "Code", icon: <Code className="size-4" /> },
+];
 
 export function Header({
   activeTab,
@@ -24,10 +35,10 @@ export function Header({
   const { selectedFieldId } = useFormStore();
 
   return (
-    <header className="border-b border-border bg-card px-4 py-3">
+    <header className="border-b p-3">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Left side - Logo and mobile sidebar toggle */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="sm"
@@ -47,35 +58,40 @@ export function Header({
         </div>
 
         {/* Center - Navigation tabs */}
-        <div className="flex items-center gap-1 bg-muted p-1 rounded-lg">
-          <Button
-            variant={activeTab === "builder" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => onTabChange("builder")}
-            className="h-8"
-          >
-            Builder
-          </Button>
-          <Button
-            variant={activeTab === "preview" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => onTabChange("preview")}
-            className="h-8"
-          >
-            Preview
-          </Button>
-          <Button
-            variant={activeTab === "code" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => onTabChange("code")}
-            className="h-8"
-          >
-            Code
-          </Button>
+        <div className="flex items-center gap-1 border p-px rounded-lg">
+          {TabsConfig.map((tab) => (
+            <Button
+              key={tab.id}
+              variant={activeTab === tab.id ? "outline" : "ghost"}
+              size="sm"
+              onClick={() =>
+                onTabChange(tab.id as "builder" | "preview" | "code")
+              }
+              className="h-7 w-7 md:h-8 md:w-fit"
+            >
+              <div className="flex items-center gap-2">
+                {tab.icon}
+                <span className="hidden md:flex">{tab.label}</span>
+              </div>
+            </Button>
+          ))}
         </div>
 
         {/* Right side - Field count and actions */}
         <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => {
+              window.open(
+                "https://github.com/nabinkhair42/better-form",
+                "_blank"
+              );
+            }}
+            className="rounded-full"
+          >
+            <GithubIcon className="size-4" />
+          </Button>
           {/* Mobile properties toggle - only show when field is selected */}
           {selectedFieldId && (
             <Button
@@ -87,7 +103,6 @@ export function Header({
               <Menu className="h-4 w-4" />
             </Button>
           )}
-
         </div>
       </div>
     </header>

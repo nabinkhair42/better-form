@@ -51,15 +51,15 @@ export function LivePreview() {
   }
 
   return (
-    <div className="p-4">
-      <div className="mb-5">
-        <h3 className="text-xl font-semibold text-foreground mb-2">
+    <div className="flex flex-col gap-4 p-4 max-w-5xl mx-auto">
+      <header>
+        <h3 className="text-xl font-semibold text-foreground">
           {formConfig.name}
         </h3>
         <p className="text-sm text-muted-foreground">
           {formConfig.description}
         </p>
-      </div>
+      </header>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

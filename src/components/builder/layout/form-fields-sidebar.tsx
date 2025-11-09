@@ -46,7 +46,7 @@ export function Sidebar() {
   };
 
   return (
-    <div className="flex h-full flex-col overflow-hidden border-r border-border bg-popover w-64">
+    <div className="flex h-full flex-col overflow-hidden border-r border-border bg-background w-64">
       <header className="border-b p-3">
         <h3 className="text-lg font-semibold text-foreground">Form Fields</h3>
       </header>

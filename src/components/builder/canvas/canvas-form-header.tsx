@@ -56,7 +56,7 @@ export function CanvasFormHeader({
   }, [editingDescription]);
 
   return (
-    <div className="rounded-lg p-6 border bg-sidebar">
+    <div className="rounded-lg p-6 border bg-background">
       {editingName ? (
         <Input
           ref={nameInputRef}

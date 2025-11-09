@@ -1,9 +1,9 @@
 "use client";
 
 import { Snippet } from "@/components/ui/snippet";
-import type { PackageManager } from "@/stores/package-manager-store";
 import { useRegistryGenerator } from "@/hooks/use-registry-generator";
 import type { DependencyPlan } from "@/lib/dependencies";
+import type { PackageManager } from "@/stores/package-manager-store";
 import type { FilePlan } from "@/types/codegen";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -17,7 +17,7 @@ interface CliTabProps {
 
 export function CliTab({ formName, filePlan, dependencyPlan }: CliTabProps) {
   const [registryUrl, setRegistryUrl] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
   const [uniqueId] = useState(() => {
     // Generate unique ID once on mount (timestamp + random)
     const timestamp = Date.now().toString(36);
@@ -127,89 +127,24 @@ export function CliTab({ formName, filePlan, dependencyPlan }: CliTabProps) {
         }
         return acc;
       },
-      {},
+      {}
     );
   }, [registryUrl]);
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="space-y-2">
-        <h2 className="text-lg font-semibold">One-Command Installation</h2>
-        <p className="text-sm text-muted-foreground">
-          Install this form component directly into your project with a single
-          CLI command. This will automatically add all files, install
-          dependencies, and configure shadcn/ui components.
-        </p>
-      </div>
-
       {/* Main Installation Command */}
       <section className="space-y-3">
         <div>
           <h3 className="text-sm font-semibold text-foreground mb-1">
-            Installation Command
+            1. Installation Command
           </h3>
           <p className="text-sm text-muted-foreground">
             Run this command in your project root to install everything:
           </p>
         </div>
 
-        {isLoading || !registryUrl ? (
-          <div className="rounded-lg border border-dashed border-muted-foreground/30 bg-muted/50 p-4 text-center">
-            <p className="text-sm text-muted-foreground">
-              Generating registry...
-            </p>
-          </div>
-        ) : (
-          <Snippet commands={installCommands} />
-        )}
-      </section>
-
-      {/* What Gets Installed */}
-      <section className="space-y-3">
-        <div>
-          <h3 className="text-sm font-semibold text-foreground mb-1">
-            What Gets Installed
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            This command will automatically:
-          </p>
-        </div>
-
-        <ul className="space-y-2 text-sm text-muted-foreground">
-          <li className="flex items-start gap-2">
-            <span className="text-green-600 dark:text-green-400 mt-0.5">✓</span>
-            <span>
-              Install {dependencyPlan.shadcn.length} shadcn/ui component
-              {dependencyPlan.shadcn.length !== 1 ? "s" : ""} (
-              {dependencyPlan.shadcn.map((c) => c.slug).join(", ")})
-            </span>
-          </li>
-          {dependencyPlan.packages.length > 0 && (
-            <li className="flex items-start gap-2">
-              <span className="text-green-600 dark:text-green-400 mt-0.5">
-                ✓
-              </span>
-              <span>
-                Install {dependencyPlan.packages.length} npm package
-                {dependencyPlan.packages.length !== 1 ? "s" : ""} (
-                {dependencyPlan.packages.map((p) => p.name).join(", ")})
-              </span>
-            </li>
-          )}
-          <li className="flex items-start gap-2">
-            <span className="text-green-600 dark:text-green-400 mt-0.5">✓</span>
-            <span>
-              Create {filePlan.customComponents.length + 2} file
-              {filePlan.customComponents.length + 2 !== 1 ? "s" : ""}: schema,
-              form component
-              {filePlan.customComponents.length > 0 &&
-                `, and ${filePlan.customComponents.length} custom component${
-                  filePlan.customComponents.length !== 1 ? "s" : ""
-                }`}
-            </span>
-          </li>
-        </ul>
+        <Snippet commands={installCommands} />
       </section>
     </div>
   );

@@ -96,7 +96,7 @@ export function Canvas() {
                 onDescriptionSubmit={handleDescriptionSubmit}
               />
 
-              <div className="min-h-[500px] rounded-lg p-6 border bg-sidebar">
+              <div className="min-h-[500px] rounded-lg p-6 border bg-background">
                 {formConfig.fields.length === 0 ? (
                   <CanvasEmptyState />
                 ) : (

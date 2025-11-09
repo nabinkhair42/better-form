@@ -5,7 +5,6 @@ import { CodeExportEmptyState } from "@/components/builder/code-export/code-expo
 import { ManualTab } from "@/components/builder/code-export/manual-tab";
 import { useCodeExportData } from "@/components/builder/code-export/use-code-export-data";
 import { Button } from "@/components/ui/shadcn/button";
-import { ScrollArea } from "@/components/ui/shadcn/scroll-area";
 import { useState, type ReactNode } from "react";
 
 type CodeTabId = "manual" | "cli";
@@ -38,7 +37,7 @@ export function CodeExport() {
   };
 
   return (
-    <ScrollArea className="p-4! h-screen">
+    <div className="flex flex-col gap-4 p-4 max-w-5xl mx-auto">
       <div className="flex items-center gap-1 bg-muted p-1 rounded-lg mb-6 w-fit">
         {CODE_TABS.map((tab) => (
           <Button
@@ -53,7 +52,7 @@ export function CodeExport() {
         ))}
       </div>
       {/* TODO: think of this unusual padding from buttom */}
-      <div className="space-y-4 max-w-4xl pb-40">{panels[activeTab]}</div>
-    </ScrollArea>
+      <div>{panels[activeTab]}</div>
+    </div>
   );
 }

@@ -13,7 +13,7 @@ function CodeBlock({ children, className, ...props }: CodeBlockProps) {
   return (
     <div
       className={cn(
-        "not-prose flex w-full flex-col overflow-clip rounded-xl border",
+        "not-prose flex w-full min-w-0 flex-col overflow-hidden rounded-xl border max-w-[calc(100vw-2rem)] lg:max-w-lg xl:max-w-xl 2xl:max-w-5xl",
         className
       )}
       {...props}
@@ -29,6 +29,37 @@ type CodeBlockTheme =
       light?: string;
       dark?: string;
     };
+
+const PRE_BASE_CLASSES =
+  "relative min-w-0 max-h-[500px] overflow-auto bg-muted px-4 py-4 text-foreground [scrollbar-width:thin] [scrollbar-color:hsl(var(--border))_transparent] [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-border/80";
+
+const CODE_BASE_CLASSES = "block min-w-max whitespace-pre";
+
+const enhanceHighlightedHtml = (html: string) => {
+  let next = html;
+
+  if (/<pre[^>]*class="/.test(next)) {
+    next = next.replace(
+      /<pre([^>]*)class="([^"]*)"/,
+      `<pre$1class="$2 ${PRE_BASE_CLASSES}"`
+    );
+  } else {
+    next = next.replace("<pre", `<pre class=\"${PRE_BASE_CLASSES}\"`);
+  }
+
+  if (/<code[^>]*class="/.test(next)) {
+    next = next.replace(
+      /<code([^>]*)class="([^"]*)"/,
+      `<code$1class="$2 ${CODE_BASE_CLASSES}"`
+    );
+  } else {
+    next = next.replace("<code", `<code class=\"${CODE_BASE_CLASSES}\"`);
+  }
+
+  next = next.replace(/background-color:\s*[^;"']+;?/gi, "");
+
+  return next;
+};
 
 export type CodeBlockCodeProps = {
   code: string;
@@ -46,7 +77,7 @@ function CodeBlockCode({
   ...rest
 }: CodeBlockCodeProps) {
   const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null);
-  const [backgroundColor, setBackgroundColor] = useState<string | null>(null);
+  const [, setBackgroundColor] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
@@ -126,13 +157,17 @@ function CodeBlockCode({
         });
 
         if (isMounted) {
-          setHighlightedHtml(html);
+          setHighlightedHtml(enhanceHighlightedHtml(html));
           const backgroundMatch = html.match(/background-color:\s*([^;"']+)/i);
-          setBackgroundColor(backgroundMatch ? backgroundMatch[1].trim() : null);
+          setBackgroundColor(
+            backgroundMatch ? backgroundMatch[1].trim() : null
+          );
         }
       } catch (error) {
         if (isMounted) {
-          setHighlightedHtml("<pre><code></code></pre>");
+          setHighlightedHtml(
+            enhanceHighlightedHtml("<pre><code></code></pre>")
+          );
           setBackgroundColor(null);
         }
         console.error("Failed to highlight code", error);
@@ -146,27 +181,20 @@ function CodeBlockCode({
     };
   }, [code, language, resolvedTheme]);
 
-  const classNames = cn(
-    "w-full overflow-x-auto text-[13px] [&>pre]:px-4 [&>pre]:py-4",
-    className
-  );
-
-  const combinedStyle = backgroundColor
-    ? { backgroundColor, ...style }
-    : style;
+  const classNames = cn("relative min-w-0 w-full text-[13px]", className);
 
   // SSR fallback: render plain code if not hydrated yet
   return highlightedHtml ? (
     <div
       className={classNames}
       dangerouslySetInnerHTML={{ __html: highlightedHtml }}
-      style={combinedStyle}
+      style={style}
       {...rest}
     />
   ) : (
-    <div className={classNames} style={combinedStyle} {...rest}>
-      <pre>
-        <code>{code}</code>
+    <div className={classNames} style={style} {...rest}>
+      <pre className={PRE_BASE_CLASSES}>
+        <code className={CODE_BASE_CLASSES}>{code}</code>
       </pre>
     </div>
   );
@@ -181,7 +209,10 @@ function CodeBlockGroup({
 }: CodeBlockGroupProps) {
   return (
     <div
-      className={cn("flex items-center justify-between", className)}
+      className={cn(
+        "flex flex-wrap items-center justify-between gap-2 sm:flex-nowrap",
+        className
+      )}
       {...props}
     >
       {children}

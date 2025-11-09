@@ -20,9 +20,8 @@ export function PropertiesPanel() {
 
   if (!selectedField) {
     return (
-      <div className="w-64 border-l border-border bg-card p-4 h-full">
+      <div className="w-64 border-l border-border p-4 h-full bg-background">
         <div className="text-center text-muted-foreground mt-8">
-
           <p className="text-sm">Select a field to edit its properties</p>
         </div>
       </div>
@@ -51,7 +50,7 @@ export function PropertiesPanel() {
     selectedField.type === "select" || selectedField.type === "radio";
 
   return (
-    <div className="w-64 border-r border bg-sidebar h-full overflow-y-auto">
+    <div className="w-64 border-r border h-full overflow-y-auto bg-background">
       <div className="p-[11.5px] border-b">
         <h3 className="text-lg font-semibold text-foreground">
           Field Properties

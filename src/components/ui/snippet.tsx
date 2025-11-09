@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo } from "react";
 
+import { BunIcon, NpmIcon, PnpmIcon, YarnIcon } from "@/assets/icons";
 import {
   CodeBlock,
   CodeBlockCode,
@@ -60,17 +61,34 @@ export function Snippet({
 
   const activeCommand = commands[activeProvider]?.trim() ?? "";
 
+  const renderIcon = (pm: PackageManager) => {
+    const iconClassName = "size-4";
+
+    switch (pm) {
+      case "npm":
+        return <NpmIcon className={iconClassName} />;
+      case "pnpm":
+        return <PnpmIcon className={iconClassName} />;
+      case "yarn":
+        return <YarnIcon className={iconClassName} />;
+      case "bun":
+        return <BunIcon className={iconClassName} />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <CodeBlock className={className}>
       <CodeBlockGroup className="p-1">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center">
           {providers.map((pm) => {
             const isActive = pm === activeProvider;
             return (
               <Button
                 key={pm}
                 className={cn(
-                  "p-2 rounded-none bg-transparent text-foreground",
+                  "flex items-center gap-2 rounded-none rounded-t bg-transparent text-foreground px-3 py-2",
                   {
                     "border-b": isActive,
                     "border-none": !isActive,
@@ -79,7 +97,8 @@ export function Snippet({
                 variant="ghost"
                 onClick={() => setSelectedManager(pm)}
               >
-                {pm}
+                {renderIcon(pm)}
+                <span className="text-sm capitalize hidden md:flex">{pm}</span>
               </Button>
             );
           })}
