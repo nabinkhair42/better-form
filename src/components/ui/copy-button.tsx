@@ -61,8 +61,9 @@ export function CopyButton({
       variant="ghost"
       size="icon"
       aria-label={isCopied ? "Copied" : "Copy"}
+      className="h-7 w-7"
     >
-      {isCopied ? <CheckIcon size={16} /> : <CopyIcon size={16} />}
+      {isCopied ? <CheckIcon size={4} /> : <CopyIcon size={4} />}
     </Button>
   );
 }

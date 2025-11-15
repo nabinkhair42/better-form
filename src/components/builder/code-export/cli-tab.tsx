@@ -1,13 +1,14 @@
 "use client";
 
 import { Snippet } from "@/components/ui/snippet";
-import { useRegistryGenerator } from "@/hooks/use-registry-generator";
 import type { DependencyPlan } from "@/lib/dependencies";
 import type { PackageManager } from "@/stores/package-manager-store";
+import { useRegistryStore } from "@/stores/registry-store";
 import type { FilePlan } from "@/types/codegen";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 const PACKAGE_MANAGERS: PackageManager[] = ["npm", "pnpm", "yarn", "bun"];
+const DEBOUNCE_DELAY = 300;
 
 interface CliTabProps {
   formName: string;
@@ -16,99 +17,81 @@ interface CliTabProps {
 }
 
 export function CliTab({ formName, filePlan, dependencyPlan }: CliTabProps) {
-  const [registryUrl, setRegistryUrl] = useState<string | null>(null);
-  const [, setIsLoading] = useState(false);
-  const [uniqueId] = useState(() => {
-    // Generate unique ID once on mount (timestamp + random)
-    const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substring(2, 7);
-    return `${timestamp}-${random}`;
-  });
-  const { generateRegistryItem } = useRegistryGenerator();
+  const {
+    registryUrl,
+    formHash: storedFormHash,
+    isGenerating,
+    error,
+    generateRegistry,
+  } = useRegistryStore();
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitialMountRef = useRef(true);
 
-  // Track if we've already generated to prevent duplicate calls
-  const hasGeneratedRef = useRef(false);
-  const abortControllerRef = useRef<AbortController | null>(null);
+  // Create a simple hash to detect changes
+  const formHash = useMemo(() => {
+    return JSON.stringify({
+      formName,
+      schema: filePlan.schema.code,
+      form: filePlan.form.code,
+      deps: dependencyPlan.packages.map((p) => p.name).sort(),
+    });
+  }, [formName, filePlan, dependencyPlan]);
 
-  const itemName = formName
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
-    .trim();
-
-  // Auto-generate and store registry on mount
+  // Auto-generate registry when form changes (debounced)
   useEffect(() => {
-    // Prevent duplicate calls
-    if (hasGeneratedRef.current) {
+    // If hash matches and we have a URL, do nothing
+    if (storedFormHash === formHash && registryUrl) {
+      isInitialMountRef.current = false;
       return;
     }
 
-    const generateAndStoreRegistry = async () => {
-      // Cancel any in-flight request
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      // Create new abort controller for this request
-      abortControllerRef.current = new AbortController();
-
-      setIsLoading(true);
-
-      try {
-        const registryItem = await generateRegistryItem(
-          formName,
-          filePlan,
-          dependencyPlan
-        );
-
-        if (registryItem) {
-          const registryId = `${itemName}-${uniqueId}`;
-
-          // Store the registry with abort signal
-          const storeResponse = await fetch("/api/r/store", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ registryId, registryItem }),
-            signal: abortControllerRef.current.signal,
-          });
-
-          if (storeResponse.ok) {
-            const { url } = await storeResponse.json();
-            setRegistryUrl(url);
-            hasGeneratedRef.current = true; // Mark as successfully generated
-          } else {
-            console.error("Failed to store registry");
-          }
-        }
-      } catch (error) {
-        // Ignore abort errors
-        if (error instanceof Error && error.name === "AbortError") {
-          return;
-        }
-        console.error("Failed to generate registry:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    generateAndStoreRegistry();
-
-    // Cleanup: abort any in-flight requests when component unmounts
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
-    // Only run once on mount - we use refs to prevent re-runs
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const installCommands = useMemo(() => {
-    if (!registryUrl) {
-      return {} as Partial<Record<PackageManager, string>>;
+    // Clear existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
     }
 
+    const generate = () => {
+      generateRegistry(formName, filePlan, dependencyPlan, formHash);
+      isInitialMountRef.current = false;
+    };
+
+    // Generate immediately on initial mount (user just switched to Code tab)
+    // Debounce for subsequent form changes to avoid excessive API calls
+    if (isInitialMountRef.current) {
+      generate();
+    } else {
+      debounceTimerRef.current = setTimeout(generate, DEBOUNCE_DELAY);
+    }
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [
+    formHash,
+    formName,
+    filePlan,
+    dependencyPlan,
+    generateRegistry,
+    storedFormHash,
+    registryUrl,
+  ]);
+
+  const installCommands = useMemo(() => {
+    // Show "Generating..." when loading, no URL, or hash mismatch
+    const isValid = storedFormHash === formHash && registryUrl;
+    if (isGenerating || !isValid) {
+      return PACKAGE_MANAGERS.reduce<Partial<Record<PackageManager, string>>>(
+        (acc, pm) => {
+          acc[pm] = "Generating registry...";
+          return acc;
+        },
+        {},
+      );
+    }
+
+    // Show actual commands
     return PACKAGE_MANAGERS.reduce<Partial<Record<PackageManager, string>>>(
       (acc, pm) => {
         switch (pm) {
@@ -127,13 +110,19 @@ export function CliTab({ formName, filePlan, dependencyPlan }: CliTabProps) {
         }
         return acc;
       },
-      {}
+      {},
     );
-  }, [registryUrl]);
+  }, [registryUrl, isGenerating, storedFormHash, formHash]);
 
   return (
     <div className="space-y-6">
-      {/* Main Installation Command */}
+      {error && (
+        <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg border border-destructive/20">
+          <p className="font-medium">Failed to generate registry</p>
+          <p className="text-xs mt-1">{error}</p>
+        </div>
+      )}
+
       <section className="space-y-3">
         <div>
           <h3 className="text-sm font-semibold text-foreground mb-1">
